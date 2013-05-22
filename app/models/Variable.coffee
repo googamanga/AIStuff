@@ -9,18 +9,18 @@ class window.Variable extends Backbone.Model
   	@set 'a', if accelerate
   	  accelerate - (@get 'c') /2 + Math.random()* (@get 'c')
   	else
-      console.log('@c and accelerate must exist for @a to be set, @c:', (@get 'c'), ' accelearete:', accelerate)
+      #console.log('@c and accelerate must exist for @a to be set, @c:', (@get 'c'), ' accelearete:', accelerate)
       (@get 'a') - (@get 'c') /2 + Math.random()* (@get 'c')
 
     @set 'v', if velocity
       velocity - @get 'a' /2 + Math.random()* @get 'a'
     else
-      console.log('@a and velocity must exist for @v to be set, @a:', (@get 'a'), ' velocity:', velocity)
+      #console.log('@a and velocity must exist for @v to be set, @a:', (@get 'a'), ' velocity:', velocity)
       (@get 'v') - (@get 'a') /2 + Math.random()* (@get 'a')
 
     @set 'd', if distance
       distance - @get 'v' /2 + Math.random()* @get 'v'
     else
-      console.log('@v and distance must exist for @d to be set, @v:', (@get 'v'), ' distance:', distance)
+      #console.log('@v and distance must exist for @d to be set, @v:', (@get 'v'), ' distance:', distance)
       (@get 'd') - (@get 'v') /2 + Math.random()* (@get 'v')
 		

@@ -13,13 +13,12 @@
     }
 
     Node.prototype.initialize = function() {
-      this.set('id');
-      this.set('connectedTo');
-      return this.set('position');
-    };
-
-    Node.prototype.defaults = {
-      'connectedTo': null
+      this.set({
+        'position': arguments.length && arguments[0]['position'] ? arguments[0]['position'] : [new Variable, new Variable]
+      });
+      return this.set({
+        'type': arguments.length && arguments[0]['type'] ? arguments[0]['type'] : 'regular'
+      });
     };
 
     return Node;

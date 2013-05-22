@@ -20,9 +20,9 @@
     };
 
     Variable.prototype.mutate = function(distance, velocity, accelerate, constant) {
-      this.set('a', accelerate ? accelerate - (this.get('c')) / 2 + Math.random() * (this.get('c')) : (console.log('@c and accelerate must exist for @a to be set, @c:', this.get('c'), ' accelearete:', accelerate), (this.get('a')) - (this.get('c')) / 2 + Math.random() * (this.get('c'))));
-      this.set('v', velocity ? velocity - this.get('a' / 2 + Math.random() * this.get('a')) : (console.log('@a and velocity must exist for @v to be set, @a:', this.get('a'), ' velocity:', velocity), (this.get('v')) - (this.get('a')) / 2 + Math.random() * (this.get('a'))));
-      return this.set('d', distance ? distance - this.get('v' / 2 + Math.random() * this.get('v')) : (console.log('@v and distance must exist for @d to be set, @v:', this.get('v'), ' distance:', distance), (this.get('d')) - (this.get('v')) / 2 + Math.random() * (this.get('v'))));
+      this.set('a', accelerate ? accelerate - (this.get('c')) / 2 + Math.random() * (this.get('c')) : (this.get('a')) - (this.get('c')) / 2 + Math.random() * (this.get('c')));
+      this.set('v', velocity ? velocity - this.get('a' / 2 + Math.random() * this.get('a')) : (this.get('v')) - (this.get('a')) / 2 + Math.random() * (this.get('a')));
+      return this.set('d', distance ? distance - this.get('v' / 2 + Math.random() * this.get('v')) : (this.get('d')) - (this.get('v')) / 2 + Math.random() * (this.get('v')));
     };
 
     return Variable;
