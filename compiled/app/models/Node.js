@@ -21,6 +21,11 @@
       });
     };
 
+    Node.prototype.mutate = function() {
+      this.get('position')[0].mutate();
+      return this.get('position')[1].mutate();
+    };
+
     return Node;
 
   })(Backbone.Model);
