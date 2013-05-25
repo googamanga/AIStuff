@@ -1,3 +1,4 @@
+
 class window.Node extends Backbone.Model
   initialize: ->
     @set 'position': if arguments.length and arguments[0]['position'] then arguments[0]['position'] else [new Variable, new Variable]

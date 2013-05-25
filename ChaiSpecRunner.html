@@ -1,0 +1,29 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mocha Tests</title>
+  <link rel="stylesheet" href="node_modules/mocha/mocha.css" />
+  <script src="assets/js/libs/jquery.js"></script>
+  <script src="node_modules/chai/chai.js"></script>
+  <script src="node_modules/mocha/mocha.js"></script>
+  <script>mocha.setup('bdd')</script>
+  <script src="compiled/spec/AppChaiSpec.js"></script>
+
+  <!-- include backbone source files here... -->
+    <script src="lib/jquery.js"></script>
+    <script src="lib/underscore.js"></script>
+    <script src="lib/backbone.js"></script>
+
+  <!-- include source files here... -->
+  <script src="compiled/app/models/Variable.js"></script>
+  <script src="compiled/app/models/Node.js"></script>
+  <script>
+    $(function() {
+      mocha.run();
+    })
+  </script>
+</head>
+<body>
+  <div id="mocha"></div>
+</body>
+</html>

@@ -1,0 +1,6 @@
+class window.Nodes extends Backbone.collection
+
+  model: Node
+
+  initialize: ->
+    @add 
