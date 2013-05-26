@@ -13,7 +13,20 @@
     }
 
     Environment.prototype.initialize = function() {
-      return this.set('Agents', new Agents());
+      this.set('populationLimit', 5);
+      return this.set('agents', new Agents());
+    };
+
+    Environment.prototype.spawnAgent = function() {
+      if (this.get('agents').length < this.get('populationLimit')) {
+        if (arguments.length) {
+          return this.get('agents').add(arguments[0]);
+        } else {
+          return this.get('agents').add([{}]);
+        }
+      } else {
+        return void 0;
+      }
     };
 
     return Environment;

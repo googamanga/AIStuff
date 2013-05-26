@@ -13,10 +13,21 @@ class window.Brain extends Backbone.Model
       @set 'seeFoodConnectionUtility', [new Variable(), new Variable()]
 
     #seeFoodConnectionProbabilities
-    probability = 1 / @get('seeFoodConnectionUtility').length
-    @set 'seeFoodConnectionProbabilities', [probability, probability]
-    @updateProbability()
+
+    if arguments.length and arguments[0]['seeFoodConnectionProbabilities']
+      # debugger
+      @set 'seeFoodConnectionProbabilities', [arguments[0]['seeFoodConnectionProbabilities'][0], arguments[0]['seeFoodConnectionProbabilities'][1]]
+      try
+        if ( arguments[0]['seeFoodConnectionProbabilities'].reduce (memo, connection)-> (memo + connection) != 1) # if sum is not one
+          throw new Error
+      catch error
+        console.log(error, "can't @set seeFoodConnectionProbabilities inside: ", this)
+    else
+      probability = 1 / @get('seeFoodConnectionUtility').length
+      @set 'seeFoodConnectionProbabilities', [probability, probability]
+
     @set 'healthPoints', if arguments.length and arguments[0]['healthPoints'] then arguments[0]['healthPoints'] else 20
+    @mutate()
 
   mutate: ->
     @get('seeFoodConnectionUtility')[0].mutate()

@@ -2,6 +2,12 @@
 
 Copyright 2013, [Alex Gaputin](googamanga@yahoo.com). All rights reserved.
 
+TODO
+-test God and Environment
+-ADD INSPECT() TO BRAIN SO IT CAN BE TRANSFERED TO ENVIRONMENT.SPAWN()
+
+
+
 mutation only on action and initialization
 
 Plan:
@@ -16,7 +22,7 @@ Plan:
 Models
   God (knows all, judges all, reaches all)
     [needed cus environment is not modeled enough yet]
-    environment
+    environment, god's dirty right hand man
       Agents (collection)
         Brain (model)
           nodes (data structure)

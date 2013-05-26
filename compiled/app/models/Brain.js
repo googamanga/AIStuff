@@ -25,10 +25,24 @@
       } else {
         this.set('seeFoodConnectionUtility', [new Variable(), new Variable()]);
       }
-      probability = 1 / this.get('seeFoodConnectionUtility').length;
-      this.set('seeFoodConnectionProbabilities', [probability, probability]);
-      this.updateProbability();
-      return this.set('healthPoints', arguments.length && arguments[0]['healthPoints'] ? arguments[0]['healthPoints'] : 20);
+      if (arguments.length && arguments[0]['seeFoodConnectionProbabilities']) {
+        this.set('seeFoodConnectionProbabilities', [arguments[0]['seeFoodConnectionProbabilities'][0], arguments[0]['seeFoodConnectionProbabilities'][1]]);
+        try {
+          if (arguments[0]['seeFoodConnectionProbabilities'].reduce(function(memo, connection) {
+            return (memo + connection) !== 1;
+          })) {
+            throw new Error;
+          }
+        } catch (_error) {
+          error = _error;
+          console.log(error, "can't @set seeFoodConnectionProbabilities inside: ", this);
+        }
+      } else {
+        probability = 1 / this.get('seeFoodConnectionUtility').length;
+        this.set('seeFoodConnectionProbabilities', [probability, probability]);
+      }
+      this.set('healthPoints', arguments.length && arguments[0]['healthPoints'] ? arguments[0]['healthPoints'] : 20);
+      return this.mutate();
     };
 
     Brain.prototype.mutate = function() {

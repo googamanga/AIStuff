@@ -1,8 +1,7 @@
-assert = chai.assert
+"use strict"
 expect = chai.expect
-should = chai.should() # Note that should has to be executed
 
-describe 'variable', ->
+describe 'Variable', ->
   variable = null
   beforeEach ->
     variable = new Variable()
@@ -10,16 +9,28 @@ describe 'variable', ->
     variable = null
   it "should create a varable correctly", ->
     expect(variable).to.exist
+    expect(variable.get('c')).is.equal(0.0000001)
+    expect(variable.get('a')).is.equal(0.0001)
+    expect(variable.get('v')).is.equal(0.01)
+    expect(variable.get('d')).is.equal(0.05)
+    # expect(variable.get('a')).is.above(0.0001-0.0000001).and.below(0.0001+0.0000001).and.is.not.equal(0.0001)
+    # expect(variable.get('v')).is.above(0.01-0.0001).and.below(0.01+0.0001).and.is.not.equal(0.01)
+    # expect(variable.get('d')).is.above(0.05-0.01).and.below(0.05+0.01).and.is.not.equal(0.5)
+
+  it "should create a varable correctly when overriding defaults", ->
+    variable1 = new Variable( {'d': 4, 'v': 3, 'a': 2 , 'c': 1} )
+    expect(variable1.get('c')).is.equal(1)
+    expect(variable1.get('a')).is.equal(2)
+    expect(variable1.get('v')).is.equal(3)
+    expect(variable1.get('d')).is.equal(4)
+    # expect(variable1.get('a')).is.above(2-1).and.below(2+1).and.is.not.equal(2)
+    # expect(variable1.get('v')).is.above(3-2).and.below(3+2).and.is.not.equal(3)
+    # expect(variable1.get('d')).is.above(4-3).and.below(4+3).and.is.not.equal(4)
+  it "should be able to mutate", ->
+    variable.mutate()
     expect(variable.get('a')).is.above(0.0001-0.0000001).and.below(0.0001+0.0000001).and.is.not.equal(0.0001)
     expect(variable.get('v')).is.above(0.01-0.0001).and.below(0.01+0.0001).and.is.not.equal(0.01)
     expect(variable.get('d')).is.above(0.05-0.01).and.below(0.05+0.01).and.is.not.equal(0.5)
-
-  it "should create a varable correctly when overriding defaults and mutate a varable correctly", ->
-    variable1 = new Variable( {'d': 4, 'v': 3, 'a': 2 , 'c': 1} )
-    expect(variable1.get('c')).is.equal(1)
-    expect(variable1.get('a')).is.above(2-1).and.below(2+1).and.is.not.equal(2)
-    expect(variable1.get('v')).is.above(3-2).and.below(3+2).and.is.not.equal(3)
-    expect(variable1.get('d')).is.above(4-3).and.below(4+3).and.is.not.equal(4)
   it "should be able to create custom variables with JSON, will be needed for persistanse later"
 
 describe "Brain", ->
@@ -57,8 +68,12 @@ describe "Brain", ->
         expect(brain1.get('seeFoodConnectionUtility')[1].get('d')).is.above(6-2).and.below(6+2).and.is.not.equal(6)
 
     describe "seeFoodConnectionProbabilities", ->
-      it "should create seeFoodConnectionProbabilities Node", ->
+      it "should create seeFoodConnectionProbabilities", ->
         expect(brain.get('seeFoodConnectionProbabilities')).to.exist
+      it "should create seeFoodConnectionProbabilities with full parameters", ->
+        brain2 = new Brain({'seeFoodConnectionProbabilities':[0.2, 0.8]})
+        expect(brain2.get('seeFoodConnectionProbabilities')[0]).is.below(0.35)
+        expect(brain2.get('seeFoodConnectionProbabilities')[1]).is.above(0.65)
       it "should mutate Utility and Probabilities on mutate()", ->
         varU0 = brain.get('seeFoodConnectionUtility')[0].get('d')
         varU1 = brain.get('seeFoodConnectionUtility')[1].get('d')
@@ -73,6 +88,44 @@ describe "Brain", ->
     describe "act", ->
       it "should work", ->
         expect(brain.act()).to.match(/^eat$|^do not eat$/)
+
+describe "Environment", ->
+  environment = null
+  beforeEach ->
+    environment = new Environment()
+  afterEach ->
+    environment = null
+  it 'should exist', ->
+    expect(environment).to.exist
+  it 'should create agents', ->
+    expect(environment.get('agents')).to.exist
+  it 'should be able to use spawn with no params', ->
+    spy = sinon.spy(environment, "spawnAgent")
+    environment.spawnAgent()
+    expect(spy.called).is.true
+    expect(environment.get('agents').length).to.equal(1)
+  describe 'spawn', ->
+    beforeEach ->
+      environment.spawnAgent({
+        'seeFoodConnectionUtility':[{'d': 0.1, 'v': 0.1},{'d': 0.1, 'v': 0.1}],
+        'seeFoodConnectionProbabilities': [0.2,0.8],
+        'healthPoints': 25
+        })
+    it 'should create new agent', ->
+      expect(environment.get('agents').length).to.equal(1)
+    it 'should update healthPoints', ->
+      expect(environment.get('agents').at(0).get('healthPoints')).is.equal(25)
+    it 'should update seeFoodConnectionUtility', ->
+      expect(environment.get('agents').at(0).get('seeFoodConnectionUtility')[0].get('d')).is.above(0.1-0.11).and.below(0.1+0.1).and.is.not.equal(0.1)
+    it 'should update seeFoodConnectionProbabilities', ->
+      debugger
+      console.log(environment)
+      expect(environment.get('agents').at(0).get('seeFoodConnectionProbabilities')[0]).is.below(0.35)
+      expect(environment.get('agents').at(0).get('seeFoodConnectionProbabilities')[1]).is.above(0.65)
+    it 'should not create new agents after population cap', ->
+      environment.spawnAgent() for index in [1..7]
+      expect(environment.get('agents').length).to.equal(5)
+
 
 
 

@@ -5,6 +5,8 @@
   <link rel="stylesheet" href="node_modules/mocha/mocha.css" />
   <script src="node_modules/chai/chai.js"></script>
   <script src="node_modules/mocha/mocha.js"></script>
+  <script src="node_modules/sinon/lib/sinon.js"></script>
+  <script src="node_modules/sinon/lib/sinon/spy.js"></script>
   <script>mocha.setup('bdd')</script>
   <script src="compiled/spec/AppChaiSpec.js"></script>
 
@@ -16,6 +18,9 @@
   <!-- include source files here... -->
   <script src="compiled/app/models/Variable.js"></script>
   <script src="compiled/app/models/Brain.js"></script>
+  <script src="compiled/app/models/Agents.js"></script>
+  <script src="compiled/app/models/Environment.js"></script>
+  <script src="compiled/app/models/God.js"></script>
   <script>
     $(function() {
       mocha.run();
