@@ -17,9 +17,6 @@
       this.set('a', arguments.length && arguments[0]['a'] ? arguments[0]['a'] : 0.0001);
       this.set('v', arguments.length && arguments[0]['v'] ? arguments[0]['v'] : 0.01);
       this.set('d', arguments.length && arguments[0]['d'] ? arguments[0]['d'] : 1);
-      if (this.attributes['d'] > 5) {
-        debugger;
-      }
       return this.mutate();
     };
 

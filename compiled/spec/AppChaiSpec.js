@@ -41,6 +41,21 @@
     return it("should be able to create custom variables with JSON, will be needed for persistanse later");
   });
 
+  describe("connection", function() {
+    var connection;
+
+    connection = null;
+    beforeEach(function() {});
+    afterEach(function() {
+      return connection = null;
+    });
+    it("should be defined when created");
+    it("should define sourceNode");
+    it("should define targetNode");
+    it("should define connectionStrength");
+    return it("should define sourceNode");
+  });
+
   describe("node", function() {
     var node;
 
@@ -57,8 +72,6 @@
       return expect(node.get('type')).to.exist;
     });
     it("should be initialized", function() {
-      node.get('position')[0].mutate();
-      node.get('position')[1].mutate();
       node.get('position')[0].get('d');
       expect(node.get('position')[0].get('d')).is.above(1 - 0.01).and.below(1 + 0.01).and.is.not.equal(1);
       expect(node.get('position')[1].get('d')).is.above(1 - 0.01).and.below(1 + 0.01).and.is.not.equal(1);
@@ -80,6 +93,7 @@
       expect(node1.get('position')[0].get('d')).is.above(5 - 3).and.below(5 + 3).and.is.not.equal(5);
       return expect(node1.get('position')[1].get('d')).is.above(3 - 0.01).and.below(3 + 0.01).and.is.not.equal(3);
     });
+    it("should update position when only one parameter given", function() {});
     it("should update type with parameter", function() {
       var node1;
 

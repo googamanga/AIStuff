@@ -1,4 +1,3 @@
-
 class window.Node extends Backbone.Model
   initialize: ->
     #position: [Var x, Var y]

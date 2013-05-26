@@ -4,7 +4,6 @@ class window.Variable extends Backbone.Model
     @set 'a', if arguments.length and arguments[0]['a'] then arguments[0]['a'] else 0.0001
     @set 'v', if arguments.length and arguments[0]['v'] then arguments[0]['v'] else 0.01
     @set 'd', if arguments.length and arguments[0]['d'] then arguments[0]['d'] else 1
-    if this.attributes['d'] > 5 then debugger
     @mutate();
 
   mutate: (distance, velocity, accelerate, constant)->
