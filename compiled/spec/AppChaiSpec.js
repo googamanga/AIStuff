@@ -41,111 +41,6 @@
     return it("should be able to create custom variables with JSON, will be needed for persistanse later");
   });
 
-  describe("connection", function() {
-    var connection;
-
-    connection = null;
-    beforeEach(function() {});
-    afterEach(function() {
-      return connection = null;
-    });
-    it("should be defined when created");
-    it("should define sourceNode");
-    it("should define targetNode");
-    it("should define connectionStrength");
-    return it("should define sourceNode");
-  });
-
-  describe("node", function() {
-    var node;
-
-    node = null;
-    beforeEach(function() {
-      return node = new Node();
-    });
-    afterEach(function() {
-      return node = null;
-    });
-    it("should be defined when created", function() {
-      expect(node).to.exist;
-      expect(node.get('position')).to.exist;
-      return expect(node.get('type')).to.exist;
-    });
-    it("should be initialized", function() {
-      node.get('position')[0].get('d');
-      expect(node.get('position')[0].get('d')).is.above(1 - 0.01).and.below(1 + 0.01).and.is.not.equal(1);
-      expect(node.get('position')[1].get('d')).is.above(1 - 0.01).and.below(1 + 0.01).and.is.not.equal(1);
-      return expect(node.get('type')).to.equal('regular');
-    });
-    it("should update position with parameters", function() {
-      var node1;
-
-      node1 = new Node({
-        'position': [
-          new Variable({
-            'd': 5,
-            'v': 3
-          }), new Variable({
-            'd': 3
-          })
-        ]
-      });
-      expect(node1.get('position')[0].get('d')).is.above(5 - 3).and.below(5 + 3).and.is.not.equal(5);
-      return expect(node1.get('position')[1].get('d')).is.above(3 - 0.01).and.below(3 + 0.01).and.is.not.equal(3);
-    });
-    it("should update position when only one parameter given", function() {});
-    it("should update type with parameter", function() {
-      var node1;
-
-      node1 = new Node({
-        'type': 'sensor'
-      });
-      return expect(node1.get('type')).to.equal('sensor');
-    });
-    it("should mutate position variables using node.mutate", function() {
-      var pos0, pos1;
-
-      pos0 = node.get('position')[0].get('d');
-      pos1 = node.get('position')[0].get('d');
-      node.mutate();
-      expect(node.get('position')[0].get('d')).is.not.equal(pos0);
-      return expect(node.get('position')[1].get('d')).is.not.equal(pos1);
-    });
-    it('should have just x and y and not position');
-    return it("should be able to create custom variables with JSON, will be needed for persistanse later");
-  });
-
-  describe("nodes", function() {
-    var nodes;
-
-    nodes = null;
-    beforeEach(function() {
-      return nodes = new Nodes();
-    });
-    afterEach(function() {
-      return nodes = null;
-    });
-    it("should be defined when created", function() {
-      expect(nodes).to.exist;
-      return expect(nodes.length).to.exist;
-    });
-    it("should be able to add default", function() {
-      expect(nodes.add({}).length).to.equal(1);
-      expect(nodes.at(0).get('position')[1].get('d')).is.above(1 - 0.01).and.below(1 + 0.01).and.is.not.equal(1);
-      return expect(nodes.at(0).get('type')).is.equal('regular');
-    });
-    it("should be able to add several non-default nodes", function() {
-      nodes.add([
-        {}, {
-          'type': 'sensor'
-        }
-      ]);
-      expect(nodes.length).is.equal(2);
-      return expect(nodes.at(1).get('type')).is.equal('sensor');
-    });
-    return it("should be able to create custom variables with JSON, will be needed for persistanse later");
-  });
-
   describe("Brain", function() {
     var brain;
 
@@ -159,30 +54,58 @@
     it("should be defined when created", function() {
       return expect(brain).to.exist;
     });
-    it("should be able to create multiple nodes", function() {
-      var node, _i;
-
-      for (node = _i = 1; _i <= 5; node = ++_i) {
-        brain.get('nodes').add({});
-      }
-      return expect(brain.get('nodes').length).to.equal(5);
+    it("should create sensory Node", function() {
+      return expect(brain.get('seeFoodNode')).to.exist;
     });
-    it("shold be able to create multiple custom nodes", function() {
-      var node, _i, _len, _ref;
-
-      _ref = [
-        {}, {
-          'type': 'sensor'
-        }, {}
-      ];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        node = _ref[_i];
-        brain.get('nodes').add(node);
-      }
-      expect(brain.get('nodes').length).is.equal(3);
-      return expect(brain.get('nodes').at(1).get('type')).is.equal('sensor');
+    it("should create sensory node with variable", function() {
+      return expect(brain.get('seeFoodNode')[0].get('d')).is.above(1 - 0.01).and.below(1 + 0.01).and.is.not.equal(1);
     });
-    return it("should be able to create custom variables with JSON, will be needed for persistanse later");
+    it("should create sensory node with variable trough parameters", function() {
+      var brain1;
+
+      brain1 = new Brain({
+        'seeFoodNode': [
+          {
+            'd': 4,
+            'v': 1
+          }, {
+            'd': 6,
+            'v': 2
+          }
+        ]
+      });
+      expect(brain1.get('seeFoodNode')[0].get('d')).is.above(4 - 1).and.below(4 + 1).and.is.not.equal(4);
+      return expect(brain1.get('seeFoodNode')[1].get('d')).is.above(6 - 2).and.below(6 + 2).and.is.not.equal(6);
+    });
+    it("should mutate connections on mutate()", function() {
+      var var0, var1;
+
+      var0 = brain.get('seeFoodNode')[0].get('d');
+      var1 = brain.get('seeFoodNode')[1].get('d');
+      brain.mutate();
+      expect(brain.get('seeFoodNode')[0].get('d')).is.not.equal(var0);
+      return expect(brain.get('seeFoodNode')[1].get('d')).is.not.equal(var1);
+    });
+    it("should create Health Points", function() {
+      expect(brain.get('healthPoints')).to.exist;
+      return expect(brain.get('healthPoints')).is.equal(20);
+    });
+    it("should create custom Health Points", function() {
+      var brain1;
+
+      brain1 = new Brain({
+        'healthPoints': 100
+      });
+      return expect(brain1.get('healthPoints')).is.equal(100);
+    });
+    it("should add health points", function() {
+      brain.addHealth(5);
+      return expect(brain.get('healthPoints')).is.equal(25);
+    });
+    return it("should subtract health points", function() {
+      brain.subtractHealth(5);
+      return expect(brain.get('healthPoints')).is.equal(15);
+    });
   });
 
 }).call(this);

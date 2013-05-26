@@ -13,13 +13,33 @@
     }
 
     Brain.prototype.initialize = function() {
-      return this.set('nodes', new Nodes());
+      var error;
+
+      if (arguments.length && arguments[0]['seeFoodNode']) {
+        try {
+          this.set('seeFoodNode', [new Variable(arguments[0]['seeFoodNode'][0]), new Variable(arguments[0]['seeFoodNode'][1])]);
+        } catch (_error) {
+          error = _error;
+          console.log(error, "can't @set seeFoodNode inside: ", this);
+        }
+      } else {
+        this.set('seeFoodNode', [new Variable(), new Variable()]);
+      }
+      this.mutate();
+      return this.set('healthPoints', arguments.length && arguments[0]['healthPoints'] ? arguments[0]['healthPoints'] : 20);
     };
 
-    Brain.prototype.mutateNodes = function() {
-      return this.nodes.forEach(function(node) {
-        return node.mutate();
-      });
+    Brain.prototype.mutate = function() {
+      this.get('seeFoodNode')[0].mutate();
+      return this.get('seeFoodNode')[1].mutate();
+    };
+
+    Brain.prototype.addHealth = function(num) {
+      return this.set('healthPoints', this.get('healthPoints') + num);
+    };
+
+    Brain.prototype.subtractHealth = function(num) {
+      return this.set('healthPoints', this.get('healthPoints') - num);
     };
 
     return Brain;
