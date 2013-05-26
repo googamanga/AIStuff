@@ -18,13 +18,22 @@
     };
 
     Environment.prototype.spawnAgent = function() {
+      var e, essence;
+
       if (this.get('agents').length < this.get('populationLimit')) {
         if (arguments.length) {
-          return this.get('agents').add(arguments[0]);
+          try {
+            essence = JSON.parse(arguments[0]);
+          } catch (_error) {
+            e = _error;
+            return this.get('agents').add(arguments[0]);
+          }
+          return this.get('agents').add(essence);
         } else {
           return this.get('agents').add([{}]);
         }
       } else {
+        console.log('reached population cap, dropped arguments:', arguments);
         return void 0;
       }
     };

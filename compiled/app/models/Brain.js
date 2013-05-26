@@ -15,50 +15,50 @@
     Brain.prototype.initialize = function() {
       var error, probability;
 
-      if (arguments.length && arguments[0]['seeFoodConnectionUtility']) {
+      if (arguments.length && arguments[0]['linkUtil']) {
         try {
-          this.set('seeFoodConnectionUtility', [new Variable(arguments[0]['seeFoodConnectionUtility'][0]), new Variable(arguments[0]['seeFoodConnectionUtility'][1])]);
+          this.set('linkUtil', [new Variable(arguments[0]['linkUtil'][0]), new Variable(arguments[0]['linkUtil'][1])]);
         } catch (_error) {
           error = _error;
-          console.log(error, "can't @set seeFoodConnectionUtility inside: ", this);
+          console.log(error, "can't @set linkUtil inside: ", this);
         }
       } else {
-        this.set('seeFoodConnectionUtility', [new Variable(), new Variable()]);
+        this.set('linkUtil', [new Variable(), new Variable()]);
       }
-      if (arguments.length && arguments[0]['seeFoodConnectionProbabilities']) {
-        this.set('seeFoodConnectionProbabilities', [arguments[0]['seeFoodConnectionProbabilities'][0], arguments[0]['seeFoodConnectionProbabilities'][1]]);
+      if (arguments.length && arguments[0]['linkProbs']) {
+        this.set('linkProbs', [arguments[0]['linkProbs'][0], arguments[0]['linkProbs'][1]]);
         try {
-          if (arguments[0]['seeFoodConnectionProbabilities'].reduce(function(memo, connection) {
+          if (arguments[0]['linkProbs'].reduce(function(memo, connection) {
             return (memo + connection) !== 1;
           })) {
             throw new Error;
           }
         } catch (_error) {
           error = _error;
-          console.log(error, "can't @set seeFoodConnectionProbabilities inside: ", this);
+          console.log(error, "can't @set linkProbs inside: ", this);
         }
       } else {
-        probability = 1 / this.get('seeFoodConnectionUtility').length;
-        this.set('seeFoodConnectionProbabilities', [probability, probability]);
+        probability = 1 / this.get('linkUtil').length;
+        this.set('linkProbs', [probability, probability]);
       }
       this.set('healthPoints', arguments.length && arguments[0]['healthPoints'] ? arguments[0]['healthPoints'] : 20);
       return this.mutate();
     };
 
     Brain.prototype.mutate = function() {
-      this.get('seeFoodConnectionUtility')[0].mutate();
-      this.get('seeFoodConnectionUtility')[1].mutate();
+      this.get('linkUtil')[0].mutate();
+      this.get('linkUtil')[1].mutate();
       return this.updateProbability();
     };
 
     Brain.prototype.updateProbability = function() {
       var minUtil, rawProbAndUtil0, rawProbAndUtil1, sumOfRawProbAndUtil;
 
-      minUtil = Math.min(this.get('seeFoodConnectionUtility')[0].get('d'), this.get('seeFoodConnectionUtility')[1].get('d'));
-      rawProbAndUtil0 = this.get('seeFoodConnectionProbabilities')[0] + this.get('seeFoodConnectionUtility')[0].get('d') + (minUtil < 0 ? -minUtil : 0);
-      rawProbAndUtil1 = this.get('seeFoodConnectionProbabilities')[1] + this.get('seeFoodConnectionUtility')[1].get('d') + (minUtil < 0 ? -minUtil : 0);
+      minUtil = Math.min(this.get('linkUtil')[0].get('d'), this.get('linkUtil')[1].get('d'));
+      rawProbAndUtil0 = this.get('linkProbs')[0] + this.get('linkUtil')[0].get('d') + (minUtil < 0 ? -minUtil : 0);
+      rawProbAndUtil1 = this.get('linkProbs')[1] + this.get('linkUtil')[1].get('d') + (minUtil < 0 ? -minUtil : 0);
       sumOfRawProbAndUtil = rawProbAndUtil0 + rawProbAndUtil1;
-      return this.set('seeFoodConnectionProbabilities', [rawProbAndUtil0 / sumOfRawProbAndUtil, rawProbAndUtil1 / sumOfRawProbAndUtil]);
+      return this.set('linkProbs', [rawProbAndUtil0 / sumOfRawProbAndUtil, rawProbAndUtil1 / sumOfRawProbAndUtil]);
     };
 
     Brain.prototype.addHealth = function(num) {
@@ -69,6 +69,10 @@
       return this.set('healthPoints', this.get('healthPoints') - num);
     };
 
+    Brain.prototype.pullEsseceInJSON = function() {
+      return JSON.stringify(this);
+    };
+
     Brain.prototype.act = function() {
       var connectionStrenght, index, rand, sum, _i, _len, _ref1;
 
@@ -76,7 +80,7 @@
       sum = 0;
       index = 0;
       this.mutate();
-      _ref1 = this.get('seeFoodConnectionProbabilities');
+      _ref1 = this.get('linkProbs');
       for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
         connectionStrenght = _ref1[_i];
         sum += connectionStrenght;
@@ -89,7 +93,7 @@
         }
         index += 1;
       }
-      throw new Error('rand not found in connection Strength array for \'seeFoodConnectionProbabilities\'');
+      throw new Error('rand not found in connection Strength array for \'linkProbs\'');
     };
 
     return Brain;

@@ -79,21 +79,21 @@
         brain.subtractHealth(5);
         return expect(brain.get('healthPoints')).is.equal(15);
       });
-      describe("seeFoodConnectionUtility", function() {
-        it("should create seeFoodConnectionUtility Node", function() {
-          return expect(brain.get('seeFoodConnectionUtility')).to.exist;
+      describe("linkUtil", function() {
+        it("should create linkUtil Node", function() {
+          return expect(brain.get('linkUtil')).to.exist;
         });
-        it("should create seeFoodConnectionUtility Node with variables", function() {
-          return expect(brain.get('seeFoodConnectionUtility')[0]).to.exist;
+        it("should create linkUtil Node with variables", function() {
+          return expect(brain.get('linkUtil')[0]).to.exist;
         });
         it("should create sensory node with variable", function() {
-          return expect(brain.get('seeFoodConnectionUtility')[0].get('d')).is.above(0.05 - 0.01).and.below(0.05 + 0.01).and.is.not.equal(0.05);
+          return expect(brain.get('linkUtil')[0].get('d')).is.above(0.05 - 0.01).and.below(0.05 + 0.01).and.is.not.equal(0.05);
         });
         return it("should create sensory node with variable trough parameters", function() {
           var brain1;
 
           brain1 = new Brain({
-            'seeFoodConnectionUtility': [
+            'linkUtil': [
               {
                 'd': 4,
                 'v': 1
@@ -103,35 +103,35 @@
               }
             ]
           });
-          expect(brain1.get('seeFoodConnectionUtility')[0].get('d')).is.above(4 - 1).and.below(4 + 1).and.is.not.equal(4);
-          return expect(brain1.get('seeFoodConnectionUtility')[1].get('d')).is.above(6 - 2).and.below(6 + 2).and.is.not.equal(6);
+          expect(brain1.get('linkUtil')[0].get('d')).is.above(4 - 1).and.below(4 + 1).and.is.not.equal(4);
+          return expect(brain1.get('linkUtil')[1].get('d')).is.above(6 - 2).and.below(6 + 2).and.is.not.equal(6);
         });
       });
-      describe("seeFoodConnectionProbabilities", function() {
-        it("should create seeFoodConnectionProbabilities", function() {
-          return expect(brain.get('seeFoodConnectionProbabilities')).to.exist;
+      describe("linkProbs", function() {
+        it("should create linkProbs", function() {
+          return expect(brain.get('linkProbs')).to.exist;
         });
-        it("should create seeFoodConnectionProbabilities with full parameters", function() {
+        it("should create linkProbs with full parameters", function() {
           var brain2;
 
           brain2 = new Brain({
-            'seeFoodConnectionProbabilities': [0.2, 0.8]
+            'linkProbs': [0.2, 0.8]
           });
-          expect(brain2.get('seeFoodConnectionProbabilities')[0]).is.below(0.35);
-          return expect(brain2.get('seeFoodConnectionProbabilities')[1]).is.above(0.65);
+          expect(brain2.get('linkProbs')[0]).is.below(0.35);
+          return expect(brain2.get('linkProbs')[1]).is.above(0.65);
         });
         return it("should mutate Utility and Probabilities on mutate()", function() {
           var varP0, varP1, varU0, varU1;
 
-          varU0 = brain.get('seeFoodConnectionUtility')[0].get('d');
-          varU1 = brain.get('seeFoodConnectionUtility')[1].get('d');
-          varP0 = brain.get('seeFoodConnectionProbabilities')[0];
-          varP1 = brain.get('seeFoodConnectionProbabilities')[1];
+          varU0 = brain.get('linkUtil')[0].get('d');
+          varU1 = brain.get('linkUtil')[1].get('d');
+          varP0 = brain.get('linkProbs')[0];
+          varP1 = brain.get('linkProbs')[1];
           brain.mutate();
-          expect(brain.get('seeFoodConnectionUtility')[0].get('d')).is.not.equal(varU0);
-          expect(brain.get('seeFoodConnectionUtility')[1].get('d')).is.not.equal(varU1);
-          expect(brain.get('seeFoodConnectionProbabilities')[0]).is.not.equal(varP0);
-          return expect(brain.get('seeFoodConnectionProbabilities')[1]).is.not.equal(varP1);
+          expect(brain.get('linkUtil')[0].get('d')).is.not.equal(varU0);
+          expect(brain.get('linkUtil')[1].get('d')).is.not.equal(varU1);
+          expect(brain.get('linkProbs')[0]).is.not.equal(varP0);
+          return expect(brain.get('linkProbs')[1]).is.not.equal(varP1);
         });
       });
       return describe("act", function() {
@@ -167,9 +167,12 @@
       return expect(environment.get('agents').length).to.equal(1);
     });
     return describe('spawn', function() {
+      var agents;
+
+      agents = null;
       beforeEach(function() {
-        return environment.spawnAgent({
-          'seeFoodConnectionUtility': [
+        environment.spawnAgent({
+          'linkUtil': [
             {
               'd': 0.1,
               'v': 0.1
@@ -178,31 +181,45 @@
               'v': 0.1
             }
           ],
-          'seeFoodConnectionProbabilities': [0.2, 0.8],
+          'linkProbs': [0.1, 0.9],
           'healthPoints': 25
         });
+        return agents = environment.get('agents');
       });
       it('should create new agent', function() {
-        return expect(environment.get('agents').length).to.equal(1);
+        return expect(agents.length).to.equal(1);
       });
       it('should update healthPoints', function() {
-        return expect(environment.get('agents').at(0).get('healthPoints')).is.equal(25);
+        return expect(agents.at(0).get('healthPoints')).is.equal(25);
       });
-      it('should update seeFoodConnectionUtility', function() {
-        return expect(environment.get('agents').at(0).get('seeFoodConnectionUtility')[0].get('d')).is.above(0.1 - 0.11).and.below(0.1 + 0.1).and.is.not.equal(0.1);
+      it('should update linkUtil', function() {
+        return expect(agents.at(0).get('linkUtil')[0].get('d')).is.above(0.1 - 0.11).and.below(0.1 + 0.1).and.is.not.equal(0.1);
       });
-      it('should update seeFoodConnectionProbabilities', function() {
-        debugger;        console.log(environment);
-        expect(environment.get('agents').at(0).get('seeFoodConnectionProbabilities')[0]).is.below(0.35);
-        return expect(environment.get('agents').at(0).get('seeFoodConnectionProbabilities')[1]).is.above(0.65);
+      it('should update linkProbs', function() {
+        expect(agents.at(0).get('linkProbs')[0]).is.below(0.30);
+        return expect(agents.at(0).get('linkProbs')[1]).is.above(0.70);
       });
-      return it('should not create new agents after population cap', function() {
+      it('should not create new agents after population cap', function() {
         var index, _i;
 
         for (index = _i = 1; _i <= 7; index = ++_i) {
           environment.spawnAgent();
         }
-        return expect(environment.get('agents').length).to.equal(5);
+        return expect(agents.length).to.equal(5);
+      });
+      it('should be able to handle JSON string "spawnAgent(JSON.parse(Brain.pullEsseceInJSON()))"', function() {
+        expect(agents.length).to.equal(2);
+        expect(agents.at(1).get('healthPoints')).is.equal(25);
+        expect(agents.at(1).get('linkUtil')[0].get('d')).is.above(0.1 - 0.11).and.below(0.1 + 0.1).and.is.not.equal(0.1);
+        expect(agents.at(1).get('linkProbs')[0]).is.below(0.35).and.is.not.equal(agents.at(0).get('linkProbs')[0]);
+        return expect(agents.at(1).get('linkProbs')[1]).is.above(0.65).and.is.not.equal(agents.at(0).get('linkProbs')[1]);
+      });
+      return it('should be able to handle JSON string "spawnAgent(Brain.pullEsseceInJSON())"', function() {
+        expect(agents.length).to.equal(2);
+        expect(agents.at(1).get('healthPoints')).is.equal(25);
+        expect(agents.at(1).get('linkUtil')[0].get('d')).is.above(0.1 - 0.11).and.below(0.1 + 0.1).and.is.not.equal(0.1);
+        expect(agents.at(1).get('linkProbs')[0]).is.below(0.35).and.is.not.equal(agents.at(0).get('linkProbs')[0]);
+        return expect(agents.at(1).get('linkProbs')[1]).is.above(0.65).and.is.not.equal(agents.at(0).get('linkProbs')[1]);
       });
     });
   });

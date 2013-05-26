@@ -5,9 +5,17 @@ class window.Environment extends Backbone.Model
     @set 'agents', new Agents()
 
   spawnAgent: ->
+    #takes in 0 parameters or an object with Brain some or all parameters
+    #works-spawnAgent(Brain.pullEsseceInJSON())
     if @get('agents').length < @get('populationLimit')
       if arguments.length
-        @get('agents').add(arguments[0])
-      else @get('agents').add([{}])
+        try
+          essence = JSON.parse(arguments[0])
+        catch e
+          return @get('agents').add(arguments[0])
+        return @get('agents').add(essence)
+      else
+        return @get('agents').add([{}])
     else
+      console.log('reached population cap, dropped arguments:', arguments)
       undefined
