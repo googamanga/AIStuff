@@ -103,7 +103,7 @@
           return expect(brain1.get('seeFoodConnectionUtility')[1].get('d')).is.above(6 - 2).and.below(6 + 2).and.is.not.equal(6);
         });
       });
-      return describe("seeFoodConnectionProbabilities", function() {
+      describe("seeFoodConnectionProbabilities", function() {
         it("should create seeFoodConnectionProbabilities Node", function() {
           return expect(brain.get('seeFoodConnectionProbabilities')).to.exist;
         });
@@ -119,6 +119,11 @@
           expect(brain.get('seeFoodConnectionUtility')[1].get('d')).is.not.equal(varU1);
           expect(brain.get('seeFoodConnectionProbabilities')[0]).is.not.equal(varP0);
           return expect(brain.get('seeFoodConnectionProbabilities')[1]).is.not.equal(varP1);
+        });
+      });
+      return describe("act", function() {
+        return it("should work", function() {
+          return expect(brain.act()).to.match(/^eat$|^do not eat$/);
         });
       });
     });

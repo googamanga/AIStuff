@@ -55,6 +55,28 @@
       return this.set('healthPoints', this.get('healthPoints') - num);
     };
 
+    Brain.prototype.act = function() {
+      var connectionStrenght, index, rand, sum, _i, _len, _ref1;
+
+      rand = Math.random();
+      sum = 0;
+      index = 0;
+      _ref1 = this.get('seeFoodConnectionProbabilities');
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        connectionStrenght = _ref1[_i];
+        sum += connectionStrenght;
+        if (sum >= rand) {
+          if (index === 0) {
+            return 'eat';
+          } else {
+            return 'do not eat';
+          }
+        }
+        index += 1;
+      }
+      throw new Error('rand not found in connection Strength array for \'seeFoodConnectionProbabilities\'');
+    };
+
     return Brain;
 
   })(Backbone.Model);

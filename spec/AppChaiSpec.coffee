@@ -70,6 +70,12 @@ describe "Brain", ->
         expect(brain.get('seeFoodConnectionProbabilities')[0]).is.not.equal(varP0)
         expect(brain.get('seeFoodConnectionProbabilities')[1]).is.not.equal(varP1)
 
+    describe "act", ->
+      it "should work", ->
+        expect(brain.act()).to.match(/^eat$|^do not eat$/)
+
+
+
 
 
 

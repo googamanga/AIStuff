@@ -1,6 +1,8 @@
 class window.Brain extends Backbone.Model
 
   initialize: ->
+    #hardcoded action nodes
+    #eat [0], don't eat[1]
     #set seeFoodConnectionUtility
     if arguments.length and arguments[0]['seeFoodConnectionUtility']
       try
@@ -37,5 +39,17 @@ class window.Brain extends Backbone.Model
 
   subtractHealth: (num) ->
     @set 'healthPoints', (@get('healthPoints') - num)
+
+  act: ->  #later will become (senseNode, with some magnitued parameter)
+    rand = Math.random()
+    sum = 0
+    index = 0
+    for connectionStrenght in @get('seeFoodConnectionProbabilities')
+      sum += connectionStrenght
+      if sum >= rand
+        return if index == 0 then 'eat' else 'do not eat'
+      index += 1
+    throw new Error 'rand not found in connection Strength array for \'seeFoodConnectionProbabilities\''
+
 
 
