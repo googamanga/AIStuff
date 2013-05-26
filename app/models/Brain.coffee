@@ -44,6 +44,7 @@ class window.Brain extends Backbone.Model
     rand = Math.random()
     sum = 0
     index = 0
+    @mutate()
     for connectionStrenght in @get('seeFoodConnectionProbabilities')
       sum += connectionStrenght
       if sum >= rand

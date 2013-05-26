@@ -61,6 +61,7 @@
       rand = Math.random();
       sum = 0;
       index = 0;
+      this.mutate();
       _ref1 = this.get('seeFoodConnectionProbabilities');
       for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
         connectionStrenght = _ref1[_i];
