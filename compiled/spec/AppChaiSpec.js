@@ -20,12 +20,11 @@
     });
     it("should create a varable correctly", function() {
       expect(variable).to.exist;
-      expect(variable.get('c')).to.equal(1e-7);
-      expect(variable.get('a')).to.equal(0.0001);
-      expect(variable.get('v')).to.equal(0.01);
-      return expect(variable.get('d')).to.equal(1);
+      expect(variable.get('a')).is.above(0.0001 - 0.0000001).and.below(0.0001 + 0.0000001).and.is.not.equal(0.0001);
+      expect(variable.get('v')).is.above(0.01 - 0.0001).and.below(0.01 + 0.0001).and.is.not.equal(0.01);
+      return expect(variable.get('d')).is.above(1 - 0.01).and.below(1 + 0.01).and.is.not.equal(1);
     });
-    it("should create a varable correctly when overriding defaults", function() {
+    it("should create a varable correctly when overriding defaults and mutate a varable correctly", function() {
       var variable1;
 
       variable1 = new Variable({
@@ -34,22 +33,12 @@
         'a': 2,
         'c': 1
       });
-      expect(variable1.get('c')).to.equal(1);
-      expect(variable1.get('a')).to.equal(2);
-      expect(variable1.get('v')).to.equal(3);
-      return expect(variable1.get('d')).to.equal(4);
+      expect(variable1.get('c')).is.equal(1);
+      expect(variable1.get('a')).is.above(2 - 1).and.below(2 + 1).and.is.not.equal(2);
+      expect(variable1.get('v')).is.above(3 - 2).and.below(3 + 2).and.is.not.equal(3);
+      return expect(variable1.get('d')).is.above(4 - 3).and.below(4 + 3).and.is.not.equal(4);
     });
-    return it("should mutate a varable correctly", function() {
-      expect(variable.mutate).to.exist;
-      expect(variable.get('c')).to.equal(1e-7);
-      expect(variable.get('a')).to.equal(0.0001);
-      expect(variable.get('v')).to.equal(0.01);
-      expect(variable.get('d')).to.equal(1);
-      variable.mutate();
-      expect(variable.get('a')).is.above(0.0001 - 1e-7 / 2).and.below(0.0001 + 1e-7 / 2).and.is.not.equal(0.0001);
-      expect(variable.get('v')).is.above(0.01 - 0.0001 / 2).and.below(0.01 + 0.0001 / 2).and.is.not.equal(0.01);
-      return expect(variable.get('d')).is.above(1 - 0.01 / 2).and.below(1 + 0.01 / 2).and.is.not.equal(1);
-    });
+    return it("should be able to create custom variables with JSON, will be needed for persistanse later");
   });
 
   describe("node", function() {
@@ -71,8 +60,8 @@
       node.get('position')[0].mutate();
       node.get('position')[1].mutate();
       node.get('position')[0].get('d');
-      expect(node.get('position')[0].get('d')).is.above(1 - 0.01 / 2).and.below(1 + 0.01 / 2).and.is.not.equal(1);
-      expect(node.get('position')[1].get('d')).is.above(1 - 0.01 / 2).and.below(1 + 0.01 / 2).and.is.not.equal(1);
+      expect(node.get('position')[0].get('d')).is.above(1 - 0.01).and.below(1 + 0.01).and.is.not.equal(1);
+      expect(node.get('position')[1].get('d')).is.above(1 - 0.01).and.below(1 + 0.01).and.is.not.equal(1);
       return expect(node.get('type')).to.equal('regular');
     });
     it("should update position with parameters", function() {
@@ -88,10 +77,8 @@
           })
         ]
       });
-      node1.get('position')[0].mutate();
-      node1.get('position')[1].mutate();
-      expect(node1.get('position')[0].get('d')).is.above(5 - 3 / 2).and.below(5 + 3 / 2).and.is.not.equal(5);
-      return expect(node1.get('position')[1].get('d')).is.above(3 - 0.01 / 2).and.below(3 + 0.01 / 2).and.is.not.equal(3);
+      expect(node1.get('position')[0].get('d')).is.above(5 - 3).and.below(5 + 3).and.is.not.equal(5);
+      return expect(node1.get('position')[1].get('d')).is.above(3 - 0.01).and.below(3 + 0.01).and.is.not.equal(3);
     });
     it("should update type with parameter", function() {
       var node1;
@@ -101,13 +88,17 @@
       });
       return expect(node1.get('type')).to.equal('sensor');
     });
-    return it("should mutate position variables using node.mutate", function() {
-      expect(node.get('position')[0].get('d')).is.equal(1);
-      expect(node.get('position')[1].get('d')).is.equal(1);
+    it("should mutate position variables using node.mutate", function() {
+      var pos0, pos1;
+
+      pos0 = node.get('position')[0].get('d');
+      pos1 = node.get('position')[0].get('d');
       node.mutate();
-      expect(node.get('position')[0].get('d')).is.above(1 - 0.01 / 2).and.below(1 + 0.01 / 2).and.is.not.equal(1);
-      return expect(node.get('position')[1].get('d')).is.above(1 - 0.01 / 2).and.below(1 + 0.01 / 2).and.is.not.equal(1);
+      expect(node.get('position')[0].get('d')).is.not.equal(pos0);
+      return expect(node.get('position')[1].get('d')).is.not.equal(pos1);
     });
+    it('should have just x and y and not position');
+    return it("should be able to create custom variables with JSON, will be needed for persistanse later");
   });
 
   describe("nodes", function() {
@@ -126,10 +117,10 @@
     });
     it("should be able to add default", function() {
       expect(nodes.add({}).length).to.equal(1);
-      expect(nodes.at(0).get('position')[1].get('d')).is.equal(1);
+      expect(nodes.at(0).get('position')[1].get('d')).is.above(1 - 0.01).and.below(1 + 0.01).and.is.not.equal(1);
       return expect(nodes.at(0).get('type')).is.equal('regular');
     });
-    return it("should be able to add several non-default nodes", function() {
+    it("should be able to add several non-default nodes", function() {
       nodes.add([
         {}, {
           'type': 'sensor'
@@ -138,6 +129,46 @@
       expect(nodes.length).is.equal(2);
       return expect(nodes.at(1).get('type')).is.equal('sensor');
     });
+    return it("should be able to create custom variables with JSON, will be needed for persistanse later");
+  });
+
+  describe("Brain", function() {
+    var brain;
+
+    brain = null;
+    beforeEach(function() {
+      return brain = new Brain();
+    });
+    afterEach(function() {
+      return brain = null;
+    });
+    it("should be defined when created", function() {
+      return expect(brain).to.exist;
+    });
+    it("should be able to create multiple nodes", function() {
+      var node, _i;
+
+      for (node = _i = 1; _i <= 5; node = ++_i) {
+        brain.get('nodes').add({});
+      }
+      return expect(brain.get('nodes').length).to.equal(5);
+    });
+    it("shold be able to create multiple custom nodes", function() {
+      var node, _i, _len, _ref;
+
+      _ref = [
+        {}, {
+          'type': 'sensor'
+        }, {}
+      ];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        node = _ref[_i];
+        brain.get('nodes').add(node);
+      }
+      expect(brain.get('nodes').length).is.equal(3);
+      return expect(brain.get('nodes').at(1).get('type')).is.equal('sensor');
+    });
+    return it("should be able to create custom variables with JSON, will be needed for persistanse later");
   });
 
 }).call(this);

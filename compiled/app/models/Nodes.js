@@ -14,8 +14,6 @@
 
     Nodes.prototype.model = Node;
 
-    Nodes.prototype.mutateAll = function() {};
-
     return Nodes;
 
   })(Backbone.Collection);
