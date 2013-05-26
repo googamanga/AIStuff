@@ -22,7 +22,7 @@
       expect(variable).to.exist;
       expect(variable.get('a')).is.above(0.0001 - 0.0000001).and.below(0.0001 + 0.0000001).and.is.not.equal(0.0001);
       expect(variable.get('v')).is.above(0.01 - 0.0001).and.below(0.01 + 0.0001).and.is.not.equal(0.01);
-      return expect(variable.get('d')).is.above(1 - 0.01).and.below(1 + 0.01).and.is.not.equal(1);
+      return expect(variable.get('d')).is.above(0.05 - 0.01).and.below(0.05 + 0.01).and.is.not.equal(0.5);
     });
     it("should create a varable correctly when overriding defaults and mutate a varable correctly", function() {
       var variable1;
@@ -42,69 +42,85 @@
   });
 
   describe("Brain", function() {
-    var brain;
+    return describe("initialize", function() {
+      var brain;
 
-    brain = null;
-    beforeEach(function() {
-      return brain = new Brain();
-    });
-    afterEach(function() {
-      return brain = null;
-    });
-    it("should be defined when created", function() {
-      return expect(brain).to.exist;
-    });
-    it("should create sensory Node", function() {
-      return expect(brain.get('seeFoodNode')).to.exist;
-    });
-    it("should create sensory node with variable", function() {
-      return expect(brain.get('seeFoodNode')[0].get('d')).is.above(1 - 0.01).and.below(1 + 0.01).and.is.not.equal(1);
-    });
-    it("should create sensory node with variable trough parameters", function() {
-      var brain1;
-
-      brain1 = new Brain({
-        'seeFoodNode': [
-          {
-            'd': 4,
-            'v': 1
-          }, {
-            'd': 6,
-            'v': 2
-          }
-        ]
+      brain = null;
+      beforeEach(function() {
+        return brain = new Brain();
       });
-      expect(brain1.get('seeFoodNode')[0].get('d')).is.above(4 - 1).and.below(4 + 1).and.is.not.equal(4);
-      return expect(brain1.get('seeFoodNode')[1].get('d')).is.above(6 - 2).and.below(6 + 2).and.is.not.equal(6);
-    });
-    it("should mutate connections on mutate()", function() {
-      var var0, var1;
-
-      var0 = brain.get('seeFoodNode')[0].get('d');
-      var1 = brain.get('seeFoodNode')[1].get('d');
-      brain.mutate();
-      expect(brain.get('seeFoodNode')[0].get('d')).is.not.equal(var0);
-      return expect(brain.get('seeFoodNode')[1].get('d')).is.not.equal(var1);
-    });
-    it("should create Health Points", function() {
-      expect(brain.get('healthPoints')).to.exist;
-      return expect(brain.get('healthPoints')).is.equal(20);
-    });
-    it("should create custom Health Points", function() {
-      var brain1;
-
-      brain1 = new Brain({
-        'healthPoints': 100
+      afterEach(function() {
+        return brain = null;
       });
-      return expect(brain1.get('healthPoints')).is.equal(100);
-    });
-    it("should add health points", function() {
-      brain.addHealth(5);
-      return expect(brain.get('healthPoints')).is.equal(25);
-    });
-    return it("should subtract health points", function() {
-      brain.subtractHealth(5);
-      return expect(brain.get('healthPoints')).is.equal(15);
+      it("should be defined when created", function() {
+        return expect(brain).to.exist;
+      });
+      it("should create Health Points", function() {
+        expect(brain.get('healthPoints')).to.exist;
+        return expect(brain.get('healthPoints')).is.equal(20);
+      });
+      it("should create custom Health Points", function() {
+        var brain1;
+
+        brain1 = new Brain({
+          'healthPoints': 100
+        });
+        return expect(brain1.get('healthPoints')).is.equal(100);
+      });
+      it("should add health points", function() {
+        brain.addHealth(5);
+        return expect(brain.get('healthPoints')).is.equal(25);
+      });
+      it("should subtract health points", function() {
+        brain.subtractHealth(5);
+        return expect(brain.get('healthPoints')).is.equal(15);
+      });
+      describe("seeFoodConnectionUtility", function() {
+        it("should create seeFoodConnectionUtility Node", function() {
+          return expect(brain.get('seeFoodConnectionUtility')).to.exist;
+        });
+        it("should create seeFoodConnectionUtility Node with variables", function() {
+          return expect(brain.get('seeFoodConnectionUtility')[0]).to.exist;
+        });
+        it("should create sensory node with variable", function() {
+          return expect(brain.get('seeFoodConnectionUtility')[0].get('d')).is.above(0.05 - 0.01).and.below(0.05 + 0.01).and.is.not.equal(0.05);
+        });
+        return it("should create sensory node with variable trough parameters", function() {
+          var brain1;
+
+          brain1 = new Brain({
+            'seeFoodConnectionUtility': [
+              {
+                'd': 4,
+                'v': 1
+              }, {
+                'd': 6,
+                'v': 2
+              }
+            ]
+          });
+          expect(brain1.get('seeFoodConnectionUtility')[0].get('d')).is.above(4 - 1).and.below(4 + 1).and.is.not.equal(4);
+          return expect(brain1.get('seeFoodConnectionUtility')[1].get('d')).is.above(6 - 2).and.below(6 + 2).and.is.not.equal(6);
+        });
+      });
+      return describe("seeFoodConnectionProbabilities", function() {
+        it("should create seeFoodConnectionProbabilities Node", function() {
+          return expect(brain.get('seeFoodConnectionProbabilities')).to.exist;
+        });
+        return it("should mutate Utility and Probabilities on mutate()", function() {
+          var varP0, varP1, varU0, varU1;
+
+          varU0 = brain.get('seeFoodConnectionUtility')[0].get('d');
+          varU1 = brain.get('seeFoodConnectionUtility')[1].get('d');
+          varP0 = brain.get('seeFoodConnectionProbabilities')[0];
+          varP1 = brain.get('seeFoodConnectionProbabilities')[1];
+          brain.mutate();
+          expect(brain.get('seeFoodConnectionUtility')[0].get('d')).is.not.equal(varU0);
+          expect(brain.get('seeFoodConnectionUtility')[1].get('d')).is.not.equal(varU1);
+          expect(brain.get('seeFoodConnectionProbabilities')[0]).is.not.equal(varP0);
+          return expect(brain.get('seeFoodConnectionProbabilities')[1]).is.not.equal(varP1);
+        });
+      });
     });
   });
 

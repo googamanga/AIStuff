@@ -13,25 +13,38 @@
     }
 
     Brain.prototype.initialize = function() {
-      var error;
+      var error, probability;
 
-      if (arguments.length && arguments[0]['seeFoodNode']) {
+      if (arguments.length && arguments[0]['seeFoodConnectionUtility']) {
         try {
-          this.set('seeFoodNode', [new Variable(arguments[0]['seeFoodNode'][0]), new Variable(arguments[0]['seeFoodNode'][1])]);
+          this.set('seeFoodConnectionUtility', [new Variable(arguments[0]['seeFoodConnectionUtility'][0]), new Variable(arguments[0]['seeFoodConnectionUtility'][1])]);
         } catch (_error) {
           error = _error;
-          console.log(error, "can't @set seeFoodNode inside: ", this);
+          console.log(error, "can't @set seeFoodConnectionUtility inside: ", this);
         }
       } else {
-        this.set('seeFoodNode', [new Variable(), new Variable()]);
+        this.set('seeFoodConnectionUtility', [new Variable(), new Variable()]);
       }
-      this.mutate();
+      probability = 1 / this.get('seeFoodConnectionUtility').length;
+      this.set('seeFoodConnectionProbabilities', [probability, probability]);
+      this.updateProbability();
       return this.set('healthPoints', arguments.length && arguments[0]['healthPoints'] ? arguments[0]['healthPoints'] : 20);
     };
 
     Brain.prototype.mutate = function() {
-      this.get('seeFoodNode')[0].mutate();
-      return this.get('seeFoodNode')[1].mutate();
+      this.get('seeFoodConnectionUtility')[0].mutate();
+      this.get('seeFoodConnectionUtility')[1].mutate();
+      return this.updateProbability();
+    };
+
+    Brain.prototype.updateProbability = function() {
+      var minUtil, rawProbAndUtil0, rawProbAndUtil1, sumOfRawProbAndUtil;
+
+      minUtil = Math.min(this.get('seeFoodConnectionUtility')[0].get('d'), this.get('seeFoodConnectionUtility')[1].get('d'));
+      rawProbAndUtil0 = this.get('seeFoodConnectionProbabilities')[0] + this.get('seeFoodConnectionUtility')[0].get('d') + (minUtil < 0 ? -minUtil : 0);
+      rawProbAndUtil1 = this.get('seeFoodConnectionProbabilities')[1] + this.get('seeFoodConnectionUtility')[1].get('d') + (minUtil < 0 ? -minUtil : 0);
+      sumOfRawProbAndUtil = rawProbAndUtil0 + rawProbAndUtil1;
+      return this.set('seeFoodConnectionProbabilities', [rawProbAndUtil0 / sumOfRawProbAndUtil, rawProbAndUtil1 / sumOfRawProbAndUtil]);
     };
 
     Brain.prototype.addHealth = function(num) {
