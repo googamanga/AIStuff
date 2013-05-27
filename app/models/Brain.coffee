@@ -26,6 +26,7 @@ class window.Brain extends Backbone.Model
       @set 'linkProbs', [probability, probability]
 
     @set 'healthPoints', if arguments.length and arguments[0]['healthPoints'] then arguments[0]['healthPoints'] else 20
+    @set 'lastAction', null
     @mutate()
 
   mutate: ->
@@ -61,7 +62,9 @@ class window.Brain extends Backbone.Model
     for connectionStrenght in @get('linkProbs')
       sum += connectionStrenght
       if sum >= rand
-        return if index == 0 then 'eat' else 'do not eat'
+        action = if index == 0 then 'eat' else 'do not eat'
+        @set 'lastAction', action
+        return action
       index += 1
     throw new Error 'rand not found in connection Strength array for \'linkProbs\''
 

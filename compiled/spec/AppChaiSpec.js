@@ -208,6 +208,7 @@
         return expect(agents.length).to.equal(5);
       });
       it('should be able to handle JSON string "spawnAgent(JSON.parse(Brain.pullEsseceInJSON()))"', function() {
+        environment.spawnAgent(JSON.parse(agents.at(0).pullEsseceInJSON()));
         expect(agents.length).to.equal(2);
         expect(agents.at(1).get('healthPoints')).is.equal(25);
         expect(agents.at(1).get('linkUtil')[0].get('d')).is.above(0.1 - 0.11).and.below(0.1 + 0.1).and.is.not.equal(0.1);
@@ -215,12 +216,21 @@
         return expect(agents.at(1).get('linkProbs')[1]).is.above(0.65).and.is.not.equal(agents.at(0).get('linkProbs')[1]);
       });
       return it('should be able to handle JSON string "spawnAgent(Brain.pullEsseceInJSON())"', function() {
+        environment.spawnAgent(agents.at(0).pullEsseceInJSON());
         expect(agents.length).to.equal(2);
         expect(agents.at(1).get('healthPoints')).is.equal(25);
         expect(agents.at(1).get('linkUtil')[0].get('d')).is.above(0.1 - 0.11).and.below(0.1 + 0.1).and.is.not.equal(0.1);
         expect(agents.at(1).get('linkProbs')[0]).is.below(0.35).and.is.not.equal(agents.at(0).get('linkProbs')[0]);
         return expect(agents.at(1).get('linkProbs')[1]).is.above(0.65).and.is.not.equal(agents.at(0).get('linkProbs')[1]);
       });
+    });
+  });
+
+  describe('God', function() {
+    return it('should start', function() {
+      var god;
+
+      return god = new God();
     });
   });
 

@@ -42,6 +42,7 @@
         this.set('linkProbs', [probability, probability]);
       }
       this.set('healthPoints', arguments.length && arguments[0]['healthPoints'] ? arguments[0]['healthPoints'] : 20);
+      this.set('lastAction', null);
       return this.mutate();
     };
 
@@ -74,7 +75,7 @@
     };
 
     Brain.prototype.act = function() {
-      var connectionStrenght, index, rand, sum, _i, _len, _ref1;
+      var action, connectionStrenght, index, rand, sum, _i, _len, _ref1;
 
       rand = Math.random();
       sum = 0;
@@ -85,11 +86,9 @@
         connectionStrenght = _ref1[_i];
         sum += connectionStrenght;
         if (sum >= rand) {
-          if (index === 0) {
-            return 'eat';
-          } else {
-            return 'do not eat';
-          }
+          action = index === 0 ? 'eat' : 'do not eat';
+          this.set('lastAction', action);
+          return action;
         }
         index += 1;
       }

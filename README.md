@@ -3,8 +3,8 @@
 Copyright 2013, [Alex Gaputin](googamanga@yahoo.com). All rights reserved.
 
 TODO
+-add resource calculation and distribution
 -test God and Environment
--ADD INSPECT() TO BRAIN SO IT CAN BE TRANSFERED TO ENVIRONMENT.SPAWN()
 
 
 
