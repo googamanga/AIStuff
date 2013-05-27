@@ -16,11 +16,12 @@ class window.Brain extends Backbone.Model
     if arguments.length and arguments[0]['linkProbs']
       # debugger
       @set 'linkProbs', [arguments[0]['linkProbs'][0], arguments[0]['linkProbs'][1]]
+      connectionSum = arguments[0]['linkProbs'].reduce (memo, connection)-> (memo + connection)
       try
-        if ( arguments[0]['linkProbs'].reduce (memo, connection)-> (memo + connection) != 1) # if sum is not one
+        if (1.0000000000000001 < connectionSum < 0.9999999999999999) # if sum is not one
           throw new Error
       catch error
-        console.log(error, "can't @set linkProbs inside: ", this)
+        console.log(error, "can't @set linkProbs inside: ", this, "sum is: ", connectionSum)
     else
       probability = 1 / @get('linkUtil').length
       @set 'linkProbs', [probability, probability]
@@ -45,11 +46,8 @@ class window.Brain extends Backbone.Model
     sumOfRawProbAndUtil = rawProbAndUtil0 + rawProbAndUtil1
     @set 'linkProbs', [rawProbAndUtil0 / sumOfRawProbAndUtil, rawProbAndUtil1 / sumOfRawProbAndUtil]
 
-  addHealth: (num) ->
+  changeHealth: (num) ->
     @set 'healthPoints', (@get('healthPoints') + num)
-
-  subtractHealth: (num) ->
-    @set 'healthPoints', (@get('healthPoints') - num)
 
   pullEsseceInJSON: ->
     JSON.stringify this
