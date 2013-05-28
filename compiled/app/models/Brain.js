@@ -42,7 +42,9 @@
         probability = 1 / this.get('linkUtil').length;
         this.set('linkProbs', [probability, probability]);
       }
-      this.set('healthPoints', arguments.length && arguments[0]['healthPoints'] ? arguments[0]['healthPoints'] : 20);
+      this.set('startingHealthPoints', 20);
+      this.set('healthPoints', this.get('startingHealthPoints'));
+      this.set('wantsABaby', false);
       this.set('lastAction', null);
       return this.mutate();
     };
@@ -64,7 +66,8 @@
     };
 
     Brain.prototype.changeHealth = function(num) {
-      return this.set('healthPoints', this.get('healthPoints') + num);
+      this.set('healthPoints', this.get('healthPoints') + num);
+      return this.set('wantsABaby', this.get('healthPoints') >= (3 * this.get('startingHealthPoints')) ? true : false);
     };
 
     Brain.prototype.pullEsseceInJSON = function() {

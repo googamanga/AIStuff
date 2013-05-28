@@ -3,8 +3,7 @@
 Copyright 2013, [Alex Gaputin](googamanga@yahoo.com). All rights reserved.
 
 TODO
--add resource calculation and distribution
--test God and Environment
+-test App and Environment
 
 
 
@@ -20,7 +19,7 @@ Plan:
     clean up dead agents
 
 Models
-  God (knows all, judges all, reaches all)
+  App (knows all, judges all, reaches all)
     [needed cus environment is not modeled enough yet]
     environment, god's dirty right hand man
       Agents (collection)

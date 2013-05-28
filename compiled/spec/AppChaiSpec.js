@@ -20,7 +20,7 @@
       expect(variable.get('c')).is.equal(0.0000001);
       expect(variable.get('a')).is.equal(0.0001);
       expect(variable.get('v')).is.equal(0.01);
-      return expect(variable.get('d')).is.equal(0.05);
+      return expect(variable.get('d')).is.equal(0.1);
     });
     it("should create a varable correctly when overriding defaults", function() {
       var variable1;
@@ -40,7 +40,7 @@
       variable.mutate();
       expect(variable.get('a')).is.above(0.0001 - 0.0000001).and.below(0.0001 + 0.0000001).and.is.not.equal(0.0001);
       expect(variable.get('v')).is.above(0.01 - 0.0001).and.below(0.01 + 0.0001).and.is.not.equal(0.01);
-      return expect(variable.get('d')).is.above(0.05 - 0.01).and.below(0.05 + 0.01).and.is.not.equal(0.5);
+      return expect(variable.get('d')).is.above(0.1 - 0.01).and.below(0.1 + 0.01).and.is.not.equal(0.100);
     });
     return it("should be able to create custom variables with JSON, will be needed for persistanse later");
   });
@@ -72,11 +72,11 @@
         return expect(brain1.get('healthPoints')).is.equal(100);
       });
       it("should add health points", function() {
-        brain.addHealth(5);
+        brain.changeHealth(5);
         return expect(brain.get('healthPoints')).is.equal(25);
       });
       it("should subtract health points", function() {
-        brain.subtractHealth(5);
+        brain.changeHealth(-5);
         return expect(brain.get('healthPoints')).is.equal(15);
       });
       describe("linkUtil", function() {
@@ -87,7 +87,7 @@
           return expect(brain.get('linkUtil')[0]).to.exist;
         });
         it("should create sensory node with variable", function() {
-          return expect(brain.get('linkUtil')[0].get('d')).is.above(0.05 - 0.01).and.below(0.05 + 0.01).and.is.not.equal(0.05);
+          return expect(brain.get('linkUtil')[0].get('d')).is.above(0.1 - 0.01).and.below(0.1 + 0.01).and.is.not.equal(0.1);
         });
         return it("should create sensory node with variable trough parameters", function() {
           var brain1;
@@ -226,11 +226,11 @@
     });
   });
 
-  describe('God', function() {
+  describe('App', function() {
     return it('should start', function() {
-      var god;
+      var app;
 
-      return god = new God();
+      return app = new App();
     });
   });
 

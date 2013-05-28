@@ -26,7 +26,9 @@ class window.Brain extends Backbone.Model
       probability = 1 / @get('linkUtil').length
       @set 'linkProbs', [probability, probability]
 
-    @set 'healthPoints', if arguments.length and arguments[0]['healthPoints'] then arguments[0]['healthPoints'] else 20
+    @set 'startingHealthPoints', 20
+    @set 'healthPoints', @get 'startingHealthPoints'
+    @set 'wantsABaby', false
     @set 'lastAction', null
     @mutate()
 
@@ -48,6 +50,8 @@ class window.Brain extends Backbone.Model
 
   changeHealth: (num) ->
     @set 'healthPoints', (@get('healthPoints') + num)
+    # if @get('healthPoints') >= (4 * @get('startingHealthPoints')) then debugger
+    @set 'wantsABaby', if @get('healthPoints') >= (3 * @get('startingHealthPoints')) then true else false
 
   pullEsseceInJSON: ->
     JSON.stringify this
