@@ -13,7 +13,7 @@
     }
 
     Brain.prototype.initialize = function() {
-      var error, probability;
+      var connectionSum, error, probability;
 
       if (arguments.length && arguments[0]['linkUtil']) {
         try {
@@ -27,15 +27,16 @@
       }
       if (arguments.length && arguments[0]['linkProbs']) {
         this.set('linkProbs', [arguments[0]['linkProbs'][0], arguments[0]['linkProbs'][1]]);
+        connectionSum = arguments[0]['linkProbs'].reduce(function(memo, connection) {
+          return memo + connection;
+        });
         try {
-          if (arguments[0]['linkProbs'].reduce(function(memo, connection) {
-            return (memo + connection) !== 1;
-          })) {
+          if ((1.0000000000000001 < connectionSum && connectionSum < 0.9999999999999999)) {
             throw new Error;
           }
         } catch (_error) {
           error = _error;
-          console.log(error, "can't @set linkProbs inside: ", this);
+          console.log(error, "can't @set linkProbs inside: ", this, "sum is: ", connectionSum);
         }
       } else {
         probability = 1 / this.get('linkUtil').length;
@@ -62,12 +63,8 @@
       return this.set('linkProbs', [rawProbAndUtil0 / sumOfRawProbAndUtil, rawProbAndUtil1 / sumOfRawProbAndUtil]);
     };
 
-    Brain.prototype.addHealth = function(num) {
+    Brain.prototype.changeHealth = function(num) {
       return this.set('healthPoints', this.get('healthPoints') + num);
-    };
-
-    Brain.prototype.subtractHealth = function(num) {
-      return this.set('healthPoints', this.get('healthPoints') - num);
     };
 
     Brain.prototype.pullEsseceInJSON = function() {

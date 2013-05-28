@@ -16,7 +16,7 @@
       this.set('c', arguments.length && arguments[0]['c'] ? arguments[0]['c'] : 0.0000001);
       this.set('a', arguments.length && arguments[0]['a'] ? arguments[0]['a'] : 0.0001);
       this.set('v', arguments.length && arguments[0]['v'] ? arguments[0]['v'] : 0.01);
-      return this.set('d', arguments.length && arguments[0]['d'] ? arguments[0]['d'] : 0.05);
+      return this.set('d', arguments.length && arguments[0]['d'] ? arguments[0]['d'] : 0.1);
     };
 
     Variable.prototype.mutate = function(distance, velocity, accelerate, constant) {
