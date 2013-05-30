@@ -33,61 +33,61 @@ describe 'Variable', ->
     expect(variable.get('d')).is.above(0.1-0.01).and.below(0.1+0.01).and.is.not.equal(0.100)
   it "should be able to create custom variables with JSON, will be needed for persistanse later"
 
-describe "Brain", ->
+describe "Agent", ->
   describe "initialize", ->
-    brain = null
+    agent = null
     beforeEach ->
-      brain = new Brain()
+      agent = new Agent()
     afterEach ->
-      brain = null
+      agent = null
     it "should be defined when created", ->
-      expect(brain).to.exist
+      expect(agent).to.exist
     it "should create Health Points", ->
-      expect(brain.get('healthPoints')).to.exist
-      expect(brain.get('healthPoints')).is.equal(20)
-    it "should create custom Health Points", ->
-      brain1 = new Brain({'healthPoints': 100})
-      expect(brain1.get('healthPoints')).is.equal(100)
+      expect(agent.get('healthPoints')).to.exist
+      expect(agent.get('healthPoints')).is.equal(20)
+    it "should make healthPoints equal to the starting constant", ->
+      agent1 = new Agent({'healthPoints': 100})
+      expect(agent1.get('healthPoints')).is.equal(agent.get('startingHealthPoints'))
     it "should add health points", ->
-      brain.changeHealth(5)
-      expect(brain.get('healthPoints')).is.equal(25)
+      agent.changeHealth(5)
+      expect(agent.get('healthPoints')).is.equal(25)
     it "should subtract health points", ->
-      brain.changeHealth(-5)
-      expect(brain.get('healthPoints')).is.equal(15)
+      agent.changeHealth(-5)
+      expect(agent.get('healthPoints')).is.equal(15)
 
     describe "linkUtil", ->
       it "should create linkUtil Node", ->
-        expect(brain.get('linkUtil')).to.exist
+        expect(agent.get('linkUtil')).to.exist
       it "should create linkUtil Node with variables", ->
-        expect(brain.get('linkUtil')[0]).to.exist
+        expect(agent.get('linkUtil')[0]).to.exist
       it "should create sensory node with variable", ->
-        expect(brain.get('linkUtil')[0].get('d')).is.above(0.1-0.01).and.below(0.1+0.01).and.is.not.equal(0.1)
+        expect(agent.get('linkUtil')[0].get('d')).is.above(0.1-0.01).and.below(0.1+0.01).and.is.not.equal(0.1)
       it "should create sensory node with variable trough parameters", ->
-        brain1 = new Brain({'linkUtil':[{'d': 4, 'v': 1},{'d': 6, 'v': 2}]})
-        expect(brain1.get('linkUtil')[0].get('d')).is.above(4-1).and.below(4+1).and.is.not.equal(4)
-        expect(brain1.get('linkUtil')[1].get('d')).is.above(6-2).and.below(6+2).and.is.not.equal(6)
+        agent1 = new Agent({'linkUtil':[{'d': 4, 'v': 1},{'d': 6, 'v': 2}]})
+        expect(agent1.get('linkUtil')[0].get('d')).is.above(4-1).and.below(4+1).and.is.not.equal(4)
+        expect(agent1.get('linkUtil')[1].get('d')).is.above(6-2).and.below(6+2).and.is.not.equal(6)
 
     describe "linkProbs", ->
       it "should create linkProbs", ->
-        expect(brain.get('linkProbs')).to.exist
+        expect(agent.get('linkProbs')).to.exist
       it "should create linkProbs with full parameters", ->
-        brain2 = new Brain({'linkProbs':[0.2, 0.8]})
-        expect(brain2.get('linkProbs')[0]).is.below(0.35)
-        expect(brain2.get('linkProbs')[1]).is.above(0.65)
+        agent2 = new Agent({'linkProbs':[0.2, 0.8]})
+        expect(agent2.get('linkProbs')[0]).is.below(0.35)
+        expect(agent2.get('linkProbs')[1]).is.above(0.65)
       it "should mutate Utility and Probabilities on mutate()", ->
-        varU0 = brain.get('linkUtil')[0].get('d')
-        varU1 = brain.get('linkUtil')[1].get('d')
-        varP0 = brain.get('linkProbs')[0]
-        varP1 = brain.get('linkProbs')[1]
-        brain.mutate()
-        expect(brain.get('linkUtil')[0].get('d')).is.not.equal(varU0)
-        expect(brain.get('linkUtil')[1].get('d')).is.not.equal(varU1)
-        expect(brain.get('linkProbs')[0]).is.not.equal(varP0)
-        expect(brain.get('linkProbs')[1]).is.not.equal(varP1)
+        varU0 = agent.get('linkUtil')[0].get('d')
+        varU1 = agent.get('linkUtil')[1].get('d')
+        varP0 = agent.get('linkProbs')[0]
+        varP1 = agent.get('linkProbs')[1]
+        agent.mutate()
+        expect(agent.get('linkUtil')[0].get('d')).is.not.equal(varU0)
+        expect(agent.get('linkUtil')[1].get('d')).is.not.equal(varU1)
+        expect(agent.get('linkProbs')[0]).is.not.equal(varP0)
+        expect(agent.get('linkProbs')[1]).is.not.equal(varP1)
 
     describe "act", ->
       it "should work", ->
-        expect(brain.act()).to.match(/^eat$|^do not eat$/)
+        expect(agent.act()).to.match(/^eat$|^do not eat$/)
 
 describe "Environment", ->
   environment = null
@@ -115,8 +115,6 @@ describe "Environment", ->
       agents = environment.get('agents')
     it 'should create new agent', ->
       expect(agents.length).to.equal(1)
-    it 'should update healthPoints', ->
-      expect(agents.at(0).get('healthPoints')).is.equal(25)
     it 'should update linkUtil', ->
       expect(agents.at(0).get('linkUtil')[0].get('d')).is.above(0.1-0.11).and.below(0.1+0.1).and.is.not.equal(0.1)
     it 'should update linkProbs', ->
@@ -125,29 +123,35 @@ describe "Environment", ->
     it 'should not create new agents after population cap', ->
       environment.spawnAgent() for index in [1..7]
       expect(agents.length).to.equal(5)
-    it 'should be able to handle JSON string "spawnAgent(JSON.parse(Brain.pullEsseceInJSON()))"', ->
+    it 'should be able to handle JSON string "spawnAgent(JSON.parse(Agent.pullEsseceInJSON()))"', ->
       environment.spawnAgent(JSON.parse(agents.at(0).pullEsseceInJSON()))
       expect(agents.length).to.equal(2)
-      expect(agents.at(1).get('healthPoints')).is.equal(25)
+      expect(agents.at(1).get('healthPoints')).is.equal(agents.at(1).get('startingHealthPoints'))
       expect(agents.at(1).get('linkUtil')[0].get('d')).is.above(0.1-0.11).and.below(0.1+0.1).and.is.not.equal(0.1)
       expect(agents.at(1).get('linkProbs')[0]).is.below(0.35).and.is.not.equal(agents.at(0).get('linkProbs')[0])
       expect(agents.at(1).get('linkProbs')[1]).is.above(0.65).and.is.not.equal(agents.at(0).get('linkProbs')[1])
-    it 'should be able to handle JSON string "spawnAgent(Brain.pullEsseceInJSON())"', ->
+    it 'should be able to handle JSON string "spawnAgent(Agent.pullEsseceInJSON())"', ->
       environment.spawnAgent(agents.at(0).pullEsseceInJSON())
       expect(agents.length).to.equal(2)
-      expect(agents.at(1).get('healthPoints')).is.equal(25)
+      expect(agents.at(1).get('healthPoints')).is.equal(agents.at(1).get('startingHealthPoints'))
       expect(agents.at(1).get('linkUtil')[0].get('d')).is.above(0.1-0.11).and.below(0.1+0.1).and.is.not.equal(0.1)
       expect(agents.at(1).get('linkProbs')[0]).is.below(0.35).and.is.not.equal(agents.at(0).get('linkProbs')[0])
       expect(agents.at(1).get('linkProbs')[1]).is.above(0.65).and.is.not.equal(agents.at(0).get('linkProbs')[1])
 describe 'App', ->
   it 'should start', ->
     app = new App()
+    expect(app.get('environment')).to.exist
+    console.log(app)
+  it 'should '
 
 
 
 
 
 
+# spy = sinon.spy(environment, "spawnAgent")
+#     environment.spawnAgent()
+#     expect(spy.called).is.true
 
 
 

@@ -1,4 +1,4 @@
-class window.Brain extends Backbone.Model
+class window.Agent extends Backbone.Model
 
   initialize: ->
     #hardcoded action nodes
@@ -27,10 +27,17 @@ class window.Brain extends Backbone.Model
       @set 'linkProbs', [probability, probability]
 
     @set 'startingHealthPoints', 20
+    @set 'oldAgeThreshold', 100
     @set 'healthPoints', @get 'startingHealthPoints'
     @set 'wantsABaby', false
     @set 'lastAction', null
+    @set 'age', 0
+    @set 'deathFromOldAge', false
     @mutate()
+
+  incrimentAge:->
+    @set 'age', (@get('age') + 1)
+    @set('deathFromOldAge', true) if @get('age') >= @get('oldAgeThreshold')
 
   mutate: ->
     @get('linkUtil')[0].mutate()

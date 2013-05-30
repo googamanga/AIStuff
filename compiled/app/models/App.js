@@ -14,13 +14,12 @@
     }
 
     App.prototype.initialize = function() {
-      this.set('env', new Environment());
+      this.set('environment', new Environment());
       this.set('judgments', {
         'eat': 5,
         'doNotEat': -5
       });
       this.set('count', 0);
-      debugger;
       this.set('intervalId', setInterval(this.mainLoop, 1000 / 60, this));
       return this.set('momsHealthPointsSum', 0);
     };
@@ -46,8 +45,8 @@
       var deadAgents, luckyOne, wannaBeMoms,
         _this = this;
 
-      while (this.get('env').get('populationLimit') > this.get('env').get('agents').length) {
-        wannaBeMoms = this.get('env').get('agents').filter(function(agent) {
+      while (this.get('environment').get('populationLimit') > this.get('environment').get('agents').length) {
+        wannaBeMoms = this.get('environment').get('agents').filter(function(agent) {
           if (agent.get('wantsABaby')) {
             return _this.set('momsHealthPointsSum', _this.get('momsHealthPointsSum') + agent.get('healthPoints'));
           } else {
@@ -58,29 +57,33 @@
           console.log('wannaBeMoms.length', wannaBeMoms);
           luckyOne = this.findTheMom(wannaBeMoms);
           luckyOne.changeHealth(luckyOne.get('startingHealthPoints') * (-2));
-          this.get('env').spawnAgent(luckyOne.pullEsseceInJSON());
-          console.log('*************************************a new baby! the lucky mom is:', luckyOne, "!");
+          this.get('environment').spawnAgent(luckyOne.pullEsseceInJSON());
+          console.log("the lucky mom is ", luckyOne, "!");
         } else {
-          this.get('env').spawnAgent();
+          this.get('environment').spawnAgent();
         }
         this.set('momsHealthPointsSum', 0);
       }
-      deadAgents = this.get('env').get('agents').filter(function(agent) {
+      deadAgents = this.get('environment').get('agents').filter(function(agent) {
         if (agent.act() === 'eat') {
           agent.changeHealth(_this.get('judgments').eat);
         } else {
           agent.changeHealth(_this.get('judgments').doNotEat);
         }
-        return agent.get('healthPoints') <= 0;
+        agent.incrimentAge();
+        return (agent.get('healthPoints') <= 0) || (agent.get('deathFromOldAge') === true);
       });
       console.log('dead agents length', deadAgents.length);
       if (deadAgents.length) {
         console.log('removing deadAgnets', deadAgents);
       }
-      this.get('env').get('agents').remove(deadAgents);
+      this.get('environment').get('agents').remove(deadAgents);
       this.set('count', this.get('count') + 1);
-      console.log('count:', this.get('count'), 'agents:', this.get('env').get('agents'));
-      if (this.get('count') >= 10000) {
+      console.log('count:', this.get('count'));
+      this.get('environment').get('agents').each(function(agent) {
+        return console.log('id: ', agent.cid, 'eat%: ', agent.get('linkProbs')[0], 'don\'eat%: ', agent.get('linkProbs')[1], 'healthpoints: ', agent.get('healthPoints'), 'age:', agent.get('age'), 'lastAction: ', agent.get('lastAction'));
+      });
+      if (this.get('count') >= 500) {
         return clearInterval(this.get('intervalId'));
       }
     };

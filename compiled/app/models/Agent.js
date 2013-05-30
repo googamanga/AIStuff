@@ -4,15 +4,15 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  window.Brain = (function(_super) {
-    __extends(Brain, _super);
+  window.Agent = (function(_super) {
+    __extends(Agent, _super);
 
-    function Brain() {
-      _ref = Brain.__super__.constructor.apply(this, arguments);
+    function Agent() {
+      _ref = Agent.__super__.constructor.apply(this, arguments);
       return _ref;
     }
 
-    Brain.prototype.initialize = function() {
+    Agent.prototype.initialize = function() {
       var connectionSum, error, probability;
 
       if (arguments.length && arguments[0]['linkUtil']) {
@@ -43,19 +43,29 @@
         this.set('linkProbs', [probability, probability]);
       }
       this.set('startingHealthPoints', 20);
+      this.set('oldAgeThreshold', 100);
       this.set('healthPoints', this.get('startingHealthPoints'));
       this.set('wantsABaby', false);
       this.set('lastAction', null);
+      this.set('age', 0);
+      this.set('deathFromOldAge', false);
       return this.mutate();
     };
 
-    Brain.prototype.mutate = function() {
+    Agent.prototype.incrimentAge = function() {
+      this.set('age', this.get('age') + 1);
+      if (this.get('age') >= this.get('oldAgeThreshold')) {
+        return this.set('deathFromOldAge', true);
+      }
+    };
+
+    Agent.prototype.mutate = function() {
       this.get('linkUtil')[0].mutate();
       this.get('linkUtil')[1].mutate();
       return this.updateProbability();
     };
 
-    Brain.prototype.updateProbability = function() {
+    Agent.prototype.updateProbability = function() {
       var minUtil, rawProbAndUtil0, rawProbAndUtil1, sumOfRawProbAndUtil;
 
       minUtil = Math.min(this.get('linkUtil')[0].get('d'), this.get('linkUtil')[1].get('d'));
@@ -65,16 +75,16 @@
       return this.set('linkProbs', [rawProbAndUtil0 / sumOfRawProbAndUtil, rawProbAndUtil1 / sumOfRawProbAndUtil]);
     };
 
-    Brain.prototype.changeHealth = function(num) {
+    Agent.prototype.changeHealth = function(num) {
       this.set('healthPoints', this.get('healthPoints') + num);
       return this.set('wantsABaby', this.get('healthPoints') >= (3 * this.get('startingHealthPoints')) ? true : false);
     };
 
-    Brain.prototype.pullEsseceInJSON = function() {
+    Agent.prototype.pullEsseceInJSON = function() {
       return JSON.stringify(this);
     };
 
-    Brain.prototype.act = function() {
+    Agent.prototype.act = function() {
       var action, connectionStrenght, index, rand, sum, _i, _len, _ref1;
 
       rand = Math.random();
@@ -95,7 +105,7 @@
       throw new Error('rand not found in connection Strength array for \'linkProbs\'');
     };
 
-    return Brain;
+    return Agent;
 
   })(Backbone.Model);
 

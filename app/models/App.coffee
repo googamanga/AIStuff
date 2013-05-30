@@ -1,15 +1,12 @@
 class window.App extends Backbone.Model
 
   initialize: ->
-    @set 'env', new Environment()
+    @set 'environment', new Environment()
     @set 'judgments', {
       'eat'     : 5,
       'doNotEat': -5
     }
     @set 'count', 0
-    # will need this later
-    # env.spawnAgent() while env.get('populationLimit') <= env.get('agents').length
-    debugger
     @set 'intervalId', setInterval(@mainLoop, 1000/60, this)
     @set 'momsHealthPointsSum', 0
 
@@ -27,9 +24,9 @@ class window.App extends Backbone.Model
   mainLoop: =>
     #spawn agents as needed
       #will change to agents spawning their own kids
-    while @get('env').get('populationLimit') > @get('env').get('agents').length
+    while @get('environment').get('populationLimit') > @get('environment').get('agents').length
        #wanna be moms exist, pick one and let it have it's baby
-      wannaBeMoms = @get('env').get('agents').filter (agent) =>
+      wannaBeMoms = @get('environment').get('agents').filter (agent) =>
         if agent.get('wantsABaby')
          @set('momsHealthPointsSum',  (@get('momsHealthPointsSum') + agent.get('healthPoints')))
         else
@@ -38,31 +35,47 @@ class window.App extends Backbone.Model
         console.log('wannaBeMoms.length', wannaBeMoms)
         luckyOne = @findTheMom(wannaBeMoms)
         luckyOne.changeHealth(luckyOne.get('startingHealthPoints') * (-2))
-        @get('env').spawnAgent(luckyOne.pullEsseceInJSON())
-        console.log('*************************************a new baby! the lucky mom is:', luckyOne, "!")
+        @get('environment').spawnAgent(luckyOne.pullEsseceInJSON())
+        console.log("the lucky mom is ", luckyOne, "!")
       else #make a new naive one
-        @get('env').spawnAgent() 
+        @get('environment').spawnAgent()
       @set('momsHealthPointsSum', 0)
 
     #while filtering on healthPoints, let agents act and judge them!
     # debugger
-    deadAgents = @get('env').get('agents').filter (agent) =>
+    deadAgents = @get('environment').get('agents').filter (agent) =>
       if agent.act() == 'eat'
         agent.changeHealth(@get('judgments').eat)
       else
         agent.changeHealth(@get('judgments').doNotEat)
-      # console.log('id', agent.cid, 'health points', agent.get('healthPoints'))
-      return  agent.get('healthPoints') <= 0
+      agent.incrimentAge()
+      return  (agent.get('healthPoints') <= 0) or (agent.get('deathFromOldAge') == true)
 
     #cleanup dead agents
 
     console.log('dead agents length', deadAgents.length)
     if(deadAgents.length)
       console.log('removing deadAgnets', deadAgents)
-    @get('env').get('agents').remove(deadAgents)
+    @get('environment').get('agents').remove(deadAgents)
 
     @set('count', @get('count') + 1)
-    console.log('count:', @get('count'), 'agents:', @get('env').get('agents'))
-    clearInterval(@get 'intervalId') if @get('count') >= 10000
+    console.log('count:', @get('count'))
+    @get('environment').get('agents').each (agent)->
+      console.log('id: ', agent.cid,
+                  'eat%: ', agent.get('linkProbs')[0],
+                  'don\'eat%: ', agent.get('linkProbs')[1],
+                  'healthpoints: ', agent.get('healthPoints'),
+                  'age:', agent.get('age'),
+                  'lastAction: ', agent.get('lastAction'))
+    clearInterval(@get 'intervalId') if @get('count') >= 500
 
     #restart main loop
+
+
+
+
+
+
+
+
+

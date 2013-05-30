@@ -12,7 +12,7 @@
       return _ref;
     }
 
-    Agents.prototype.model = Brain;
+    Agents.prototype.model = Agent;
 
     return Agents;
 

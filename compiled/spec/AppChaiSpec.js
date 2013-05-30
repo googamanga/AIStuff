@@ -45,54 +45,54 @@
     return it("should be able to create custom variables with JSON, will be needed for persistanse later");
   });
 
-  describe("Brain", function() {
+  describe("Agent", function() {
     return describe("initialize", function() {
-      var brain;
+      var agent;
 
-      brain = null;
+      agent = null;
       beforeEach(function() {
-        return brain = new Brain();
+        return agent = new Agent();
       });
       afterEach(function() {
-        return brain = null;
+        return agent = null;
       });
       it("should be defined when created", function() {
-        return expect(brain).to.exist;
+        return expect(agent).to.exist;
       });
       it("should create Health Points", function() {
-        expect(brain.get('healthPoints')).to.exist;
-        return expect(brain.get('healthPoints')).is.equal(20);
+        expect(agent.get('healthPoints')).to.exist;
+        return expect(agent.get('healthPoints')).is.equal(20);
       });
-      it("should create custom Health Points", function() {
-        var brain1;
+      it("should make healthPoints equal to the starting constant", function() {
+        var agent1;
 
-        brain1 = new Brain({
+        agent1 = new Agent({
           'healthPoints': 100
         });
-        return expect(brain1.get('healthPoints')).is.equal(100);
+        return expect(agent1.get('healthPoints')).is.equal(agent.get('startingHealthPoints'));
       });
       it("should add health points", function() {
-        brain.changeHealth(5);
-        return expect(brain.get('healthPoints')).is.equal(25);
+        agent.changeHealth(5);
+        return expect(agent.get('healthPoints')).is.equal(25);
       });
       it("should subtract health points", function() {
-        brain.changeHealth(-5);
-        return expect(brain.get('healthPoints')).is.equal(15);
+        agent.changeHealth(-5);
+        return expect(agent.get('healthPoints')).is.equal(15);
       });
       describe("linkUtil", function() {
         it("should create linkUtil Node", function() {
-          return expect(brain.get('linkUtil')).to.exist;
+          return expect(agent.get('linkUtil')).to.exist;
         });
         it("should create linkUtil Node with variables", function() {
-          return expect(brain.get('linkUtil')[0]).to.exist;
+          return expect(agent.get('linkUtil')[0]).to.exist;
         });
         it("should create sensory node with variable", function() {
-          return expect(brain.get('linkUtil')[0].get('d')).is.above(0.1 - 0.01).and.below(0.1 + 0.01).and.is.not.equal(0.1);
+          return expect(agent.get('linkUtil')[0].get('d')).is.above(0.1 - 0.01).and.below(0.1 + 0.01).and.is.not.equal(0.1);
         });
         return it("should create sensory node with variable trough parameters", function() {
-          var brain1;
+          var agent1;
 
-          brain1 = new Brain({
+          agent1 = new Agent({
             'linkUtil': [
               {
                 'd': 4,
@@ -103,40 +103,40 @@
               }
             ]
           });
-          expect(brain1.get('linkUtil')[0].get('d')).is.above(4 - 1).and.below(4 + 1).and.is.not.equal(4);
-          return expect(brain1.get('linkUtil')[1].get('d')).is.above(6 - 2).and.below(6 + 2).and.is.not.equal(6);
+          expect(agent1.get('linkUtil')[0].get('d')).is.above(4 - 1).and.below(4 + 1).and.is.not.equal(4);
+          return expect(agent1.get('linkUtil')[1].get('d')).is.above(6 - 2).and.below(6 + 2).and.is.not.equal(6);
         });
       });
       describe("linkProbs", function() {
         it("should create linkProbs", function() {
-          return expect(brain.get('linkProbs')).to.exist;
+          return expect(agent.get('linkProbs')).to.exist;
         });
         it("should create linkProbs with full parameters", function() {
-          var brain2;
+          var agent2;
 
-          brain2 = new Brain({
+          agent2 = new Agent({
             'linkProbs': [0.2, 0.8]
           });
-          expect(brain2.get('linkProbs')[0]).is.below(0.35);
-          return expect(brain2.get('linkProbs')[1]).is.above(0.65);
+          expect(agent2.get('linkProbs')[0]).is.below(0.35);
+          return expect(agent2.get('linkProbs')[1]).is.above(0.65);
         });
         return it("should mutate Utility and Probabilities on mutate()", function() {
           var varP0, varP1, varU0, varU1;
 
-          varU0 = brain.get('linkUtil')[0].get('d');
-          varU1 = brain.get('linkUtil')[1].get('d');
-          varP0 = brain.get('linkProbs')[0];
-          varP1 = brain.get('linkProbs')[1];
-          brain.mutate();
-          expect(brain.get('linkUtil')[0].get('d')).is.not.equal(varU0);
-          expect(brain.get('linkUtil')[1].get('d')).is.not.equal(varU1);
-          expect(brain.get('linkProbs')[0]).is.not.equal(varP0);
-          return expect(brain.get('linkProbs')[1]).is.not.equal(varP1);
+          varU0 = agent.get('linkUtil')[0].get('d');
+          varU1 = agent.get('linkUtil')[1].get('d');
+          varP0 = agent.get('linkProbs')[0];
+          varP1 = agent.get('linkProbs')[1];
+          agent.mutate();
+          expect(agent.get('linkUtil')[0].get('d')).is.not.equal(varU0);
+          expect(agent.get('linkUtil')[1].get('d')).is.not.equal(varU1);
+          expect(agent.get('linkProbs')[0]).is.not.equal(varP0);
+          return expect(agent.get('linkProbs')[1]).is.not.equal(varP1);
         });
       });
       return describe("act", function() {
         return it("should work", function() {
-          return expect(brain.act()).to.match(/^eat$|^do not eat$/);
+          return expect(agent.act()).to.match(/^eat$|^do not eat$/);
         });
       });
     });
@@ -189,9 +189,6 @@
       it('should create new agent', function() {
         return expect(agents.length).to.equal(1);
       });
-      it('should update healthPoints', function() {
-        return expect(agents.at(0).get('healthPoints')).is.equal(25);
-      });
       it('should update linkUtil', function() {
         return expect(agents.at(0).get('linkUtil')[0].get('d')).is.above(0.1 - 0.11).and.below(0.1 + 0.1).and.is.not.equal(0.1);
       });
@@ -207,18 +204,18 @@
         }
         return expect(agents.length).to.equal(5);
       });
-      it('should be able to handle JSON string "spawnAgent(JSON.parse(Brain.pullEsseceInJSON()))"', function() {
+      it('should be able to handle JSON string "spawnAgent(JSON.parse(Agent.pullEsseceInJSON()))"', function() {
         environment.spawnAgent(JSON.parse(agents.at(0).pullEsseceInJSON()));
         expect(agents.length).to.equal(2);
-        expect(agents.at(1).get('healthPoints')).is.equal(25);
+        expect(agents.at(1).get('healthPoints')).is.equal(agents.at(1).get('startingHealthPoints'));
         expect(agents.at(1).get('linkUtil')[0].get('d')).is.above(0.1 - 0.11).and.below(0.1 + 0.1).and.is.not.equal(0.1);
         expect(agents.at(1).get('linkProbs')[0]).is.below(0.35).and.is.not.equal(agents.at(0).get('linkProbs')[0]);
         return expect(agents.at(1).get('linkProbs')[1]).is.above(0.65).and.is.not.equal(agents.at(0).get('linkProbs')[1]);
       });
-      return it('should be able to handle JSON string "spawnAgent(Brain.pullEsseceInJSON())"', function() {
+      return it('should be able to handle JSON string "spawnAgent(Agent.pullEsseceInJSON())"', function() {
         environment.spawnAgent(agents.at(0).pullEsseceInJSON());
         expect(agents.length).to.equal(2);
-        expect(agents.at(1).get('healthPoints')).is.equal(25);
+        expect(agents.at(1).get('healthPoints')).is.equal(agents.at(1).get('startingHealthPoints'));
         expect(agents.at(1).get('linkUtil')[0].get('d')).is.above(0.1 - 0.11).and.below(0.1 + 0.1).and.is.not.equal(0.1);
         expect(agents.at(1).get('linkProbs')[0]).is.below(0.35).and.is.not.equal(agents.at(0).get('linkProbs')[0]);
         return expect(agents.at(1).get('linkProbs')[1]).is.above(0.65).and.is.not.equal(agents.at(0).get('linkProbs')[1]);
@@ -227,11 +224,14 @@
   });
 
   describe('App', function() {
-    return it('should start', function() {
+    it('should start', function() {
       var app;
 
-      return app = new App();
+      app = new App();
+      expect(app.get('environment')).to.exist;
+      return console.log(app);
     });
+    return it('should ');
   });
 
 }).call(this);

@@ -23,7 +23,7 @@ Models
     [needed cus environment is not modeled enough yet]
     environment, god's dirty right hand man
       Agents (collection)
-        Brain (model)
+        Agent (model)
           nodes (data structure)
             variables (model)
           connections (data structure)

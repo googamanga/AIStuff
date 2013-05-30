@@ -5,8 +5,8 @@ class window.Environment extends Backbone.Model
     @set 'agents', new Agents()
 
   spawnAgent: ->
-    #takes in 0 parameters or an object with Brain some or all parameters
-    #works-spawnAgent(Brain.pullEsseceInJSON())
+    #takes in 0 parameters or an object with Agent some or all parameters
+    #works-spawnAgent(Agent.pullEsseceInJSON())
     if @get('agents').length < @get('populationLimit')
       if arguments.length
         try
