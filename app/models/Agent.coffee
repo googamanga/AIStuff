@@ -14,7 +14,6 @@ class window.Agent extends Backbone.Model
 
     #linkProbs
     if arguments.length and arguments[0]['linkProbs']
-      # debugger
       @set 'linkProbs', [arguments[0]['linkProbs'][0], arguments[0]['linkProbs'][1]]
       connectionSum = arguments[0]['linkProbs'].reduce (memo, connection)-> (memo + connection)
       try
@@ -57,7 +56,6 @@ class window.Agent extends Backbone.Model
 
   changeHealth: (num) ->
     @set 'healthPoints', (@get('healthPoints') + num)
-    # if @get('healthPoints') >= (4 * @get('startingHealthPoints')) then debugger
     @set 'wantsABaby', if @get('healthPoints') >= (3 * @get('startingHealthPoints')) then true else false
 
   pullEsseceInJSON: ->

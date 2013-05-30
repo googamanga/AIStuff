@@ -8,41 +8,40 @@ class window.App extends Backbone.Model
     }
     @set 'count', 0
     @set 'intervalId', setInterval(@mainLoop, 1000/60, this)
-    @set 'momsHealthPointsSum', 0
+    @set 'parentsHealthPointsSum', 0
 
-  findTheMom: (wannaBeMoms)->
-          rand = Math.random() * @get('momsHealthPointsSum')
+  findTheParent: (wannaBeParents)->
+          rand = Math.random() * @get('parentsHealthPointsSum')
           sum = 0
           index = 0
-          for agent in wannaBeMoms
+          for agent in wannaBeParents
             sum += agent.get('healthPoints')
             if sum >= rand
               return agent
             index += 1
-          throw new Error 'rand not found in wannaBeMoms array'
+          throw new Error 'rand not found in wannaBeParents array'
 
   mainLoop: =>
     #spawn agents as needed
       #will change to agents spawning their own kids
     while @get('environment').get('populationLimit') > @get('environment').get('agents').length
-       #wanna be moms exist, pick one and let it have it's baby
-      wannaBeMoms = @get('environment').get('agents').filter (agent) =>
+       #wanna be parents exist, pick one and let it have it's baby
+      wannaBeParents = @get('environment').get('agents').filter (agent) =>
         if agent.get('wantsABaby')
-         @set('momsHealthPointsSum',  (@get('momsHealthPointsSum') + agent.get('healthPoints')))
+         @set('parentsHealthPointsSum',  (@get('parentsHealthPointsSum') + agent.get('healthPoints')))
         else
           false
-      if wannaBeMoms.length
-        console.log('wannaBeMoms.length', wannaBeMoms)
-        luckyOne = @findTheMom(wannaBeMoms)
+      if wannaBeParents.length
+        console.log('wannaBeParents.length', wannaBeParents)
+        luckyOne = @findTheParent(wannaBeParents)
         luckyOne.changeHealth(luckyOne.get('startingHealthPoints') * (-2))
-        @get('environment').spawnAgent(luckyOne.pullEsseceInJSON())
-        console.log("the lucky mom is ", luckyOne, "!")
+        console.log("the lucky parent is: ", luckyOne, "!")
+        console.log("the lucky kid is: ", @get('environment').spawnAgent(luckyOne.pullEsseceInJSON()).at(@get('environment').get('agents').length-1))
       else #make a new naive one
         @get('environment').spawnAgent()
-      @set('momsHealthPointsSum', 0)
+      @set('parentsHealthPointsSum', 0)
 
     #while filtering on healthPoints, let agents act and judge them!
-    # debugger
     deadAgents = @get('environment').get('agents').filter (agent) =>
       if agent.act() == 'eat'
         agent.changeHealth(@get('judgments').eat)
@@ -67,7 +66,7 @@ class window.App extends Backbone.Model
                   'healthpoints: ', agent.get('healthPoints'),
                   'age:', agent.get('age'),
                   'lastAction: ', agent.get('lastAction'))
-    clearInterval(@get 'intervalId') if @get('count') >= 500
+    clearInterval(@get 'intervalId') if @get('count') >= 100
 
     #restart main loop
 

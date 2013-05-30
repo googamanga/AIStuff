@@ -21,48 +21,48 @@
       });
       this.set('count', 0);
       this.set('intervalId', setInterval(this.mainLoop, 1000 / 60, this));
-      return this.set('momsHealthPointsSum', 0);
+      return this.set('parentsHealthPointsSum', 0);
     };
 
-    App.prototype.findTheMom = function(wannaBeMoms) {
+    App.prototype.findTheParent = function(wannaBeParents) {
       var agent, index, rand, sum, _i, _len;
 
-      rand = Math.random() * this.get('momsHealthPointsSum');
+      rand = Math.random() * this.get('parentsHealthPointsSum');
       sum = 0;
       index = 0;
-      for (_i = 0, _len = wannaBeMoms.length; _i < _len; _i++) {
-        agent = wannaBeMoms[_i];
+      for (_i = 0, _len = wannaBeParents.length; _i < _len; _i++) {
+        agent = wannaBeParents[_i];
         sum += agent.get('healthPoints');
         if (sum >= rand) {
           return agent;
         }
         index += 1;
       }
-      throw new Error('rand not found in wannaBeMoms array');
+      throw new Error('rand not found in wannaBeParents array');
     };
 
     App.prototype.mainLoop = function() {
-      var deadAgents, luckyOne, wannaBeMoms,
+      var deadAgents, luckyOne, wannaBeParents,
         _this = this;
 
       while (this.get('environment').get('populationLimit') > this.get('environment').get('agents').length) {
-        wannaBeMoms = this.get('environment').get('agents').filter(function(agent) {
+        wannaBeParents = this.get('environment').get('agents').filter(function(agent) {
           if (agent.get('wantsABaby')) {
-            return _this.set('momsHealthPointsSum', _this.get('momsHealthPointsSum') + agent.get('healthPoints'));
+            return _this.set('parentsHealthPointsSum', _this.get('parentsHealthPointsSum') + agent.get('healthPoints'));
           } else {
             return false;
           }
         });
-        if (wannaBeMoms.length) {
-          console.log('wannaBeMoms.length', wannaBeMoms);
-          luckyOne = this.findTheMom(wannaBeMoms);
+        if (wannaBeParents.length) {
+          console.log('wannaBeParents.length', wannaBeParents);
+          luckyOne = this.findTheParent(wannaBeParents);
           luckyOne.changeHealth(luckyOne.get('startingHealthPoints') * (-2));
-          this.get('environment').spawnAgent(luckyOne.pullEsseceInJSON());
-          console.log("the lucky mom is ", luckyOne, "!");
+          console.log("the lucky parent is: ", luckyOne, "!");
+          console.log("the lucky kid is: ", this.get('environment').spawnAgent(luckyOne.pullEsseceInJSON()).at(this.get('environment').get('agents').length - 1));
         } else {
           this.get('environment').spawnAgent();
         }
-        this.set('momsHealthPointsSum', 0);
+        this.set('parentsHealthPointsSum', 0);
       }
       deadAgents = this.get('environment').get('agents').filter(function(agent) {
         if (agent.act() === 'eat') {
@@ -83,7 +83,7 @@
       this.get('environment').get('agents').each(function(agent) {
         return console.log('id: ', agent.cid, 'eat%: ', agent.get('linkProbs')[0], 'don\'eat%: ', agent.get('linkProbs')[1], 'healthpoints: ', agent.get('healthPoints'), 'age:', agent.get('age'), 'lastAction: ', agent.get('lastAction'));
       });
-      if (this.get('count') >= 500) {
+      if (this.get('count') >= 100) {
         return clearInterval(this.get('intervalId'));
       }
     };
