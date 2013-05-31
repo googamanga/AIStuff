@@ -4,6 +4,9 @@ Copyright 2013, [Alex Gaputin](googamanga@yahoo.com). All rights reserved.
 
 TODO
 -test App and Environment
+move environment initialization variables to environment
+create multi environment
+create multi environment easy-input
 
 
 

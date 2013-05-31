@@ -1,11 +1,11 @@
 class window.AppView extends Backbone.View
   
-  className: "AppView",
+  className: "AppView"
 
   initialize: ->
-    # this.listenTo(@model, "change", @render);
     @render()
 
+
   render: ->
-    $('body').append("hello")
-    console.log('hello')
+    $('body').append($("<p>hello</p>").outerHtml)
+    # $('body').append("hello")

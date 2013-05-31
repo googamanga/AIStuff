@@ -19,8 +19,7 @@
     };
 
     AppView.prototype.render = function() {
-      $('body').append("hello");
-      return console.log('hello');
+      return $('body').append($("<p>hello</p>").outerHtml);
     };
 
     return AppView;
