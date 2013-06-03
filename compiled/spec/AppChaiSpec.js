@@ -20,7 +20,7 @@
       expect(variable.get('c')).is.equal(0.0000001);
       expect(variable.get('a')).is.equal(0.0001);
       expect(variable.get('v')).is.equal(0.01);
-      return expect(variable.get('d')).is.equal(0.1);
+      return expect(variable.get('d')).is.equal(0.0);
     });
     it("should create a varable correctly when overriding defaults", function() {
       var variable1;
@@ -36,13 +36,12 @@
       expect(variable1.get('v')).is.equal(3);
       return expect(variable1.get('d')).is.equal(4);
     });
-    it("should be able to mutate", function() {
+    return it("should be able to mutate", function() {
       variable.mutate();
       expect(variable.get('a')).is.above(0.0001 - 0.0000001).and.below(0.0001 + 0.0000001).and.is.not.equal(0.0001);
       expect(variable.get('v')).is.above(0.01 - 0.0001).and.below(0.01 + 0.0001).and.is.not.equal(0.01);
-      return expect(variable.get('d')).is.above(0.1 - 0.01).and.below(0.1 + 0.01).and.is.not.equal(0.100);
+      return expect(variable.get('d')).is.above(0 - 0.01).and.below(0 + 0.01).and.is.not.equal(0);
     });
-    return it("should be able to create custom variables with JSON, will be needed for persistanse later");
   });
 
   describe("Agent", function() {
@@ -87,7 +86,7 @@
           return expect(agent.get('linkUtil')[0]).to.exist;
         });
         it("should create sensory node with variable", function() {
-          return expect(agent.get('linkUtil')[0].get('d')).is.above(0.1 - 0.01).and.below(0.1 + 0.01).and.is.not.equal(0.1);
+          return expect(agent.get('linkUtil')[0].get('d')).is.above(0 - 0.01).and.below(0 + 0.01).and.is.not.equal(0);
         });
         return it("should create sensory node with variable trough parameters", function() {
           var agent1;

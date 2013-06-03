@@ -12,7 +12,7 @@ describe 'Variable', ->
     expect(variable.get('c')).is.equal(0.0000001)
     expect(variable.get('a')).is.equal(0.0001)
     expect(variable.get('v')).is.equal(0.01)
-    expect(variable.get('d')).is.equal(0.1)
+    expect(variable.get('d')).is.equal(0.0)
     # expect(variable.get('a')).is.above(0.0001-0.0000001).and.below(0.0001+0.0000001).and.is.not.equal(0.0001)
     # expect(variable.get('v')).is.above(0.01-0.0001).and.below(0.01+0.0001).and.is.not.equal(0.01)
     # expect(variable.get('d')).is.above(0.05-0.01).and.below(0.05+0.01).and.is.not.equal(0.5)
@@ -30,8 +30,7 @@ describe 'Variable', ->
     variable.mutate()
     expect(variable.get('a')).is.above(0.0001-0.0000001).and.below(0.0001+0.0000001).and.is.not.equal(0.0001)
     expect(variable.get('v')).is.above(0.01-0.0001).and.below(0.01+0.0001).and.is.not.equal(0.01)
-    expect(variable.get('d')).is.above(0.1-0.01).and.below(0.1+0.01).and.is.not.equal(0.100)
-  it "should be able to create custom variables with JSON, will be needed for persistanse later"
+    expect(variable.get('d')).is.above(0-0.01).and.below(0+0.01).and.is.not.equal(0)
 
 describe "Agent", ->
   describe "initialize", ->
@@ -61,7 +60,7 @@ describe "Agent", ->
       it "should create linkUtil Node with variables", ->
         expect(agent.get('linkUtil')[0]).to.exist
       it "should create sensory node with variable", ->
-        expect(agent.get('linkUtil')[0].get('d')).is.above(0.1-0.01).and.below(0.1+0.01).and.is.not.equal(0.1)
+        expect(agent.get('linkUtil')[0].get('d')).is.above(0-0.01).and.below(0+0.01).and.is.not.equal(0)
       it "should create sensory node with variable trough parameters", ->
         agent1 = new Agent({'linkUtil':[{'d': 4, 'v': 1},{'d': 6, 'v': 2}]})
         expect(agent1.get('linkUtil')[0].get('d')).is.above(4-1).and.below(4+1).and.is.not.equal(4)

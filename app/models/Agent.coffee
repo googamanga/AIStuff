@@ -25,8 +25,8 @@ class window.Agent extends Backbone.Model
       probability = 1 / @get('linkUtil').length
       @set 'linkProbs', [probability, probability]
 
-    @set 'startingHealthPoints', 20
-    @set 'oldAgeThreshold', 100
+    @set 'startingHealthPoints', if arguments.length and arguments[0]['startingHealthPoints'] then arguments[0]['startingHealthPoints'] else 20
+    @set 'oldAgeThreshold', if arguments.length and arguments[0]['oldAgeThreshold'] then arguments[0]['oldAgeThreshold'] else 100
     @set 'healthPoints', @get 'startingHealthPoints'
     @set 'wantsABaby', false
     @set 'lastAction', null

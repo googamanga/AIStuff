@@ -83,7 +83,7 @@
       this.get('environment').get('agents').each(function(agent) {
         return console.log('id: ', agent.cid, 'eat%: ', agent.get('linkProbs')[0], 'don\'eat%: ', agent.get('linkProbs')[1], 'healthpoints: ', agent.get('healthPoints'), 'age:', agent.get('age'), 'lastAction: ', agent.get('lastAction'));
       });
-      if (this.get('count') >= 100) {
+      if (this.get('count') >= 500) {
         return clearInterval(this.get('intervalId'));
       }
     };

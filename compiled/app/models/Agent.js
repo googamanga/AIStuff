@@ -42,8 +42,8 @@
         probability = 1 / this.get('linkUtil').length;
         this.set('linkProbs', [probability, probability]);
       }
-      this.set('startingHealthPoints', 20);
-      this.set('oldAgeThreshold', 100);
+      this.set('startingHealthPoints', arguments.length && arguments[0]['startingHealthPoints'] ? arguments[0]['startingHealthPoints'] : 20);
+      this.set('oldAgeThreshold', arguments.length && arguments[0]['oldAgeThreshold'] ? arguments[0]['oldAgeThreshold'] : 100);
       this.set('healthPoints', this.get('startingHealthPoints'));
       this.set('wantsABaby', false);
       this.set('lastAction', null);

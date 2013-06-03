@@ -66,7 +66,7 @@ class window.App extends Backbone.Model
                   'healthpoints: ', agent.get('healthPoints'),
                   'age:', agent.get('age'),
                   'lastAction: ', agent.get('lastAction'))
-    clearInterval(@get 'intervalId') if @get('count') >= 100
+    clearInterval(@get 'intervalId') if @get('count') >= 500
 
     #restart main loop
 
