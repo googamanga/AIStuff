@@ -1,7 +1,7 @@
 class window.Environment extends Backbone.Model
 
   initialize: ->
-    @set 'populationLimit', 5
+    @set 'populationLimit', 10
     @set 'agents', new Agents()
 
   spawnAgent: ->

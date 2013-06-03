@@ -14,13 +14,16 @@
     }
 
     App.prototype.initialize = function() {
+      var timer;
+
       this.set('environment', new Environment());
       this.set('judgments', {
         'eat': 5,
         'doNotEat': -5
       });
       this.set('count', 0);
-      this.set('intervalId', setInterval(this.mainLoop, 1000 / 60, this));
+      timer = 0;
+      this.set('intervalId', setInterval(this.mainLoop, timer, this));
       return this.set('parentsHealthPointsSum', 0);
     };
 

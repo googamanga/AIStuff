@@ -7,7 +7,8 @@ class window.App extends Backbone.Model
       'doNotEat': -5
     }
     @set 'count', 0
-    @set 'intervalId', setInterval(@mainLoop, 1000/60, this)
+    timer = 0#1000/60
+    @set 'intervalId', setInterval(@mainLoop, timer, this)
     @set 'parentsHealthPointsSum', 0
 
   findTheParent: (wannaBeParents)->
